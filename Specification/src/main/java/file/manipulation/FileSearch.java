@@ -8,6 +8,8 @@ public interface FileSearch {
 	
 	void searchByMetaData(int metaOrNo);
 	
+	void ls(String Path);
 	
+	void cd();
 	
 }

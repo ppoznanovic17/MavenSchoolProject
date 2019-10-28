@@ -1,4 +1,4 @@
-package file.manipulation;
+package manipulation;
 
 public class FileSearch {
 

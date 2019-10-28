@@ -12,5 +12,5 @@ public interface UserManipulation {
 	
 	String question(String question);
 	
-	void showMenuforUser();
+	
 }
