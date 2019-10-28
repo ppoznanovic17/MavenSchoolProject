@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import org.graalvm.compiler.nodes.PauseNode;
 import org.json.simple.JSONArray;
 
 import file.Folder;
@@ -26,17 +25,18 @@ public class MainConsoleApp {
 	static User user= new User();
 	static String currentFolder= "";
 	static String jsonUsers="";
-	
+	static String root;
 	public static void main(String[] args) throws Exception {
 		BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
 		ConsoleFunctions.write("Dobrodosli");
 		//ucitavanje json fajla (univerzalno)
-		String currentFolder=ConsoleFunctions.question("Unesite putanju do repozitorijuma:");
+		 currentFolder=ConsoleFunctions.question("Unesite putanju do repozitorijuma:");
 		File file= folder.getJson(currentFolder);
 		jsonUsers= file.getAbsolutePath().toString();
 		String absolutePath = file.getAbsolutePath();
-		currentFolder= absolutePath.
-			    substring(0,absolutePath.lastIndexOf(File.separator));
+		root=absolutePath.
+	    substring(0,absolutePath.lastIndexOf(File.separator));
+		currentFolder= root;
 		
 		System.out.println(file.getAbsolutePath().toString());
 		//log in
@@ -89,7 +89,8 @@ public class MainConsoleApp {
 				continue;
 			}else
 			if(answer.equals("4") && privileges.contains("download_file")) {
-				System.out.println("4");
+				String name;
+				name=ConsoleFunctions.question("Unesite ime koje zelite da dodelite fajlu:");
 				continue;
 			}else
 			if(answer.equals("5") && privileges.contains("search_repository")) {
@@ -97,7 +98,10 @@ public class MainConsoleApp {
 				continue;
 			}else
 			if(answer.equals("6") && privileges.contains("delete_file")) {
-				System.out.println("6");
+				String name;
+				name=ConsoleFunctions.question("Unesite ime koje zelite da dodelite fajlu:");
+				System.out.println(folder.delete(name, currentFolder));
+				
 				continue;
 			}if(answer.equals("7") && privileges.contains("add_user")) {
 				String name;
@@ -107,8 +111,15 @@ public class MainConsoleApp {
 			}if(answer.equals("ls")) {
 				folder.ls(currentFolder);
 				continue;
-			}if(answer.equals("cd")) {
-				System.out.println("cd");
+			}if(answer.startsWith("cd")) {
+				String[] tokens = answer.split(" ");
+				if(tokens.length==1) {
+					System.out.println("Nepotpuna komanda");
+				}else if(tokens.length>1) {
+					currentFolder=folder.cd(tokens, currentFolder, root);
+					System.out.println(currentFolder);
+				}
+				
 				continue;
 			}else if(answer.equals("end")){
 				break;

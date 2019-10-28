@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -19,7 +20,7 @@ import file.manipulation.Storage;
 
 public class Folder extends Storage {
 	
-	public static final String BLUE = "\033[0;34m";    // BLUE
+	
 	
 	public Folder() {
 		super();
@@ -161,15 +162,52 @@ public class Folder extends Storage {
 	}
 	
 	@Override
-	public String delete(String fileName, String path) {
-		// TODO Auto-generated method stub
-		return null;
+	public String delete(String fileName, String path) throws IOException {
+		File file = new File(path+"\\"+fileName);
+
+		boolean exists =      file.exists();      
+		boolean isDirectory = file.isDirectory();
+		boolean isFile =      file.isFile();      
+        
+		BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
+		
+		if(exists) {
+			if(isFile) {
+				if(file.delete()) {
+					return "Fajl je uspesno izbrisan";
+				}else {
+					return "Doslo je do greske prilikom brisanja fajla";
+				}
+			}
+			if(isDirectory) {
+				File[] listOfFiles = file.listFiles();
+				if(listOfFiles.length==0) {
+					if(file.delete()) return "Folder je uspesno obrisan";
+				}
+				String answer="";
+				System.out.println("Da li ste sigurni da zelite da obrisete folder? U njemu se\n nalazi jos fajlova ili foldera. ( y , n )");
+				answer=reader.readLine();
+				while(!(answer.equals("y") || answer.equals("n") )) {
+					System.out.println("Da li ste sigurni da zelite da obrisete folder? U njemu se\n nalazi jos fajlova ili foldera. ( y , n )");
+					answer=reader.readLine();
+				}
+				if(answer.equals("y")) {
+					FileUtils.deleteDirectory(file);
+					return "Uspesno obrisan folder";
+				}else {
+					return "Brisanje foldera obustavljeno";
+				}
+				
+			}
+		}
+		
+        return "Ime koje ste uneli ne moze da se pronadje u direktorijumu.";
 	}
 
 	@Override
 	public String download(String fileName, String path) {
-		// TODO Auto-generated method stub
-		return null;
+		return path;
+		
 	}
 
 	@Override
@@ -237,9 +275,45 @@ public class Folder extends Storage {
 	}
 
 	@Override
-	public void cd() {
-		// TODO Auto-generated method stub
-		
+	public String cd(String[] command, String path, String root) {
+		String pom=command[1];
+		for(int i=2; i< command.length;i++) {
+			pom=pom+ " "+command[i];
+		}
+		System.out.println("root:" +root);
+		System.out.println("curr:" + path);
+		System.out.println(pom);
+		if(pom.equals("..")) {
+			String help=path.substring(0,path.lastIndexOf(File.separator));
+			System.out.println("help: " +help);
+			if(root.equals(path)) {
+				System.out.println("Vec se nalazite u root-u repozitorijumu");
+				return root;
+			}else {
+				System.out.println("Trenutna lokacija: " + help);
+				return help;
+				
+			}
+		}else {
+			File f= new File(path);
+			File[] listOfFiles = f.listFiles();
+			for(int i=0; i<listOfFiles.length;i++) {
+				if(listOfFiles[i].getName().equals(pom)) {
+					System.out.println("Trenutna lokacija: " + path+"\\"+pom);
+					return path+"\\"+pom;
+				}
+			}
+		}
+		System.out.println("Nevalidan unos. Lokacija je ostala nepromenjena!");
+		System.out.println("Trenutna lokacija: " +path);
+		return path;
 	}
+
+	
+
+	
+
+	
+	
 	
 }

@@ -10,6 +10,8 @@ public interface FileSearch {
 	
 	void ls(String Path);
 	
-	void cd();
+	
+
+	String cd(String[] command, String path, String root);
 	
 }
