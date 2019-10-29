@@ -113,11 +113,19 @@ public class Folder extends Storage {
 	}
 
 	@Override
-	public String uploadDir(String fileName, String path) {
+	public String uploadDir(String fileName, String path,String number) {
+		int broj=Integer.parseInt(number);
+		if(broj==0) {
+			return "Upload [ERROR]";
+		}
 		if(!(fileName.contains("."))) {
-			File f= new File(path+"\\"+fileName);
+			for(int i=1;i<=broj;i++) {
+				File f= new File(path+"\\"+fileName+i);
+				f.mkdir();
+			}
 			
-			f.mkdir();
+			
+			
 			return "Uploaded ------> 100%";
 		}
 		
@@ -125,11 +133,12 @@ public class Folder extends Storage {
 	}
 
 	@Override
-	public String uploadFile(String fileName, String path) throws Exception {
+	public String uploadFile(String fileName, String path,String f) throws Exception {
 		List<String> ext= new ArrayList<String>();
 		File file= new File(path+"\\"+fileName);
+		System.out.println("----->"+f);
 		System.out.println(file.getAbsolutePath().toString());
-		JSONObject obj= (JSONObject) readJsonSimpleDemo(path+"\\users.json");
+		JSONObject obj= (JSONObject) readJsonSimpleDemo(f);
 		Object arr= obj.get("ext");
 		if(arr instanceof JSONArray) {
 			for(Object a:((JSONArray)arr)) {
@@ -205,8 +214,30 @@ public class Folder extends Storage {
 	}
 
 	@Override
-	public String download(String fileName, String path) {
-		return path;
+	public String download(String fileName, String path, String current) {
+		File folder=new File(current);
+		File[] listofFiles=folder.listFiles();
+		for(File f: listofFiles) {
+			if(f.getName().equals(fileName)) {
+				if(f.isDirectory()) {
+					File novi= new File(path+"\\"+fileName);
+					novi.mkdir();
+					return "Uspesno preuzet folder.";
+				}
+				if(f.isFile()) {
+					File novi=new File(path+"\\"+fileName);
+					try {
+						novi.createNewFile();
+						return "Uspesno preuzet fajl.";
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		
+		return "Ime koje ste uneli ne moze da se pronadje u direktorijumu.";
 		
 	}
 
@@ -217,9 +248,24 @@ public class Folder extends Storage {
 	}
 
 	@Override
-	public void searchByExtension(String extension) {
-		// TODO Auto-generated method stub
-		
+	public String searchByExtension(String extension, String path) {
+		StringBuilder sb=new StringBuilder();
+		int cnt=0;
+		sb.append("Lista fajlova sa trazenom ekstenzijom: ");
+		sb.append("\n");
+		File folder=new File(path);
+		File[] listOfFiles=folder.listFiles();
+		for(File f:listOfFiles) {
+			if(f.getName().substring(f.getName().indexOf(".")+1, f.getName().length()).equals(extension)) {
+				sb.append(f.getName());
+				sb.append("\n");
+				cnt++;
+			}
+		}
+		if(cnt!=0) {
+			return sb.toString();
+		}
+		return "Ne postoji fajl sa takvom ekstenzijom u trenutnom direktorijumu!";
 	}
 
 	@Override

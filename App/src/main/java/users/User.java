@@ -27,8 +27,7 @@ public class User {
 		int cnt;
 		BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
 		StringBuilder sb=new StringBuilder();
-		//String korisnik=main.get("Username").toString();
-		//System.out.println(korisnik);
+		
 		System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------");
 		sb.append("**********Trenutna lokacija:" + path+"**********\n");
 		if(privileges.contains("add_user")) {
@@ -72,7 +71,7 @@ public class User {
 		sb.append("Izaberite 'ls' za prikaz sadrzine trenutnog foldera");
 		sb.append("\n");
 		sb.append("Izaberite 'cd' <folder name> ili <..> za kretanje po fajlu");
-		sb.append("\n"+path+" >");
+		//sb.append("\n"+path+" >");
 		System.out.print(sb.toString());
 		
 	}

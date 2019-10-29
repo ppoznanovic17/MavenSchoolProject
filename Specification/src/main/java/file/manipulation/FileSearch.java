@@ -4,7 +4,7 @@ public interface FileSearch {
 
 	void searchByName(String fileName);
 	
-	void searchByExtension(String extension);
+	String searchByExtension(String extension,String path);
 	
 	void searchByMetaData(int metaOrNo);
 	
