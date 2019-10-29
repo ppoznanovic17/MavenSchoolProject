@@ -19,7 +19,7 @@ public class MainConsoleApp {
 	 * C:\Users\Bogi\Desktop
 	 * */
 	
-	
+	/* za koriscenje ovih boja u konzoli skini ANSI escape u marketplace-u*/
 	public static final String BLUE_BOLD = "\033[1;34m";
 	public static final String ANSI_RESET = "\033[0m";
 	public static final String GREEN_BOLD = "\033[1;32m";
