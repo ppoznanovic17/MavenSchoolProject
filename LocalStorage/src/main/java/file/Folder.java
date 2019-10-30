@@ -8,6 +8,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,6 +22,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import file.manipulation.Storage;
+import user.User;
 
 public class Folder extends Storage {
 	
@@ -90,12 +95,15 @@ public class Folder extends Storage {
 		user.put("privileges", privilege);
 		users.add(user);
 		
+		JSONArray metaData= new JSONArray();
+		
+		
 		JSONArray extensions= new JSONArray();
 		
 		
 		storage.put("users", users);
 		storage.put("ext",extensions);
-		
+		storage.put("meta", metaData);
 		BufferedWriter writer=null;
 		
 		writer= new BufferedWriter(new FileWriter(folder.getAbsolutePath().toString()));
@@ -106,7 +114,7 @@ public class Folder extends Storage {
 		
 	}
 	
-	
+
  
 	public Folder(String path) {
 		super(path);
@@ -114,16 +122,86 @@ public class Folder extends Storage {
 	}
 
 	@Override
-	public String uploadDir(String fileName, String path,String number) {
+	public String uploadDir(String fileName, String path,String number,boolean metaBool, User u,String users) {
 		int broj=Integer.parseInt(number);
+		
+		
 		if(broj==0) {
 			return "Upload [ERROR]";
 		}
+		
+		JSONObject obj = null;
+		JSONArray metas = null;
+		try {
+			obj = (JSONObject) readJsonSimpleDemo(users);
+			metas= (JSONArray) obj.get("meta");
+			System.out.println(metas);
+		} catch (Exception e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 		if(!(fileName.contains("."))) {
-			for(int i=1;i<=broj;i++) {
-				File f= new File(path+"\\"+fileName+i);
+			JSONObject meta= new JSONObject();
+			File f;
+			for(int i=1;i<=broj;i++) {			
+				
+				if(i==1 && broj==1) {
+				
+					f= new File(path+"\\"+fileName);
+					if(metaBool) {
+						 String atr="Ime fajla: " + fileName;
+						
+						meta.put("name", atr);
+						atr= "User who made it: "+u.getUsername();
+						meta.put("creator", atr);
+						 atr= "Folder roditelj: "+f.getParentFile();
+						 meta.put("parent", atr);
+						 SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+						 Date date = new Date(System.currentTimeMillis());
+						 atr= formatter.format(date);
+						 atr= "Vreme kreiranja fajla je: " + atr;
+						 meta.put("date", atr);
+						 atr= f.getAbsolutePath().toString();
+						 meta.put("path", atr);
+						 metas.add(meta);
+					}
+				}else {
+					 f= new File(path+"\\"+fileName+i);
+					 if(metaBool) {
+						 String atr="Ime fajla: " + fileName+i;
+						
+						meta.put("name", atr);
+						atr= "User who made it: "+u.getUsername();
+						meta.put("creator", atr);
+						 atr= "Folder roditelj: "+f.getParentFile();
+						 meta.put("parent", atr);
+						 SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+						 Date date = new Date(System.currentTimeMillis());
+						 atr= formatter.format(date);
+						 atr= "Vreme kreiranja fajla je: " + atr;
+						 meta.put("date", atr);
+						 atr= f.getAbsolutePath().toString();
+						 meta.put("path", atr);
+						 metas.add(meta);
+					}
+				}
+				
 				f.mkdir();
+				
 			}
+			
+			BufferedWriter writer;
+			try {
+				writer = new BufferedWriter(new FileWriter(users));
+				writer.write(obj.toString());
+				writer.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
 			
 			
 			
@@ -134,7 +212,7 @@ public class Folder extends Storage {
 	}
 
 	@Override
-	public String uploadFile(String fileName, String path,String f) throws Exception {
+	public String uploadFile(String fileName, String path,String f,boolean metaBool, User u) throws Exception {
 		List<String> ext= new ArrayList<String>();
 		File file= new File(path+"\\"+fileName);
 		System.out.println("----->"+f);
@@ -151,6 +229,36 @@ public class Folder extends Storage {
 		System.out.println(ext);
 		if(ext.size()==0) {
 			file.createNewFile();
+			
+			if(metaBool) {
+				JSONArray metaArr= (JSONArray) obj.get("meta");
+				JSONObject meta= new JSONObject();
+				 String atr="Ime fajla: " + file.getName();
+					
+					meta.put("name", atr);
+					atr= "User who made it: "+u.getUsername();
+					meta.put("creator", atr);
+					 atr= "Folder roditelj: "+file.getParentFile();
+					 meta.put("parent", atr);
+					 SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+					 Date date = new Date(System.currentTimeMillis());
+					 atr= formatter.format(date);
+					 atr= "Vreme nastanka fajla: " +atr;
+					 meta.put("date", atr);
+					 atr= file.getAbsolutePath().toString();
+					 meta.put("path", atr);
+					 metaArr.add(meta);
+					 BufferedWriter writer;
+						try {
+							writer = new BufferedWriter(new FileWriter(f));
+							writer.write(obj.toString());
+							writer.close();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+				
+			}
 			return "Uploaded ------> 100%";
 		}
 		boolean help=true;
@@ -161,14 +269,67 @@ public class Folder extends Storage {
 			}
 		}
 		
+		
+		
 		if(help) {
 			file.createNewFile();
+			if(metaBool) {
+				JSONArray metaArr= (JSONArray) obj.get("meta");
+				JSONObject meta= new JSONObject();
+				 String atr="Ime fajla: " + file.getName();
+					
+					meta.put("name", atr);
+					atr= "User who made it: "+u.getUsername();
+					meta.put("creator", atr);
+					 atr= "Folder roditelj: "+file.getParentFile();
+					 meta.put("parent", atr);
+					 SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
+					 Date date = new Date(System.currentTimeMillis());
+					 atr= formatter.format(date);
+					 atr= "Vreme nastanka fajla: " +atr;
+					 meta.put("date", atr);
+					 atr= file.getAbsolutePath().toString();
+					 meta.put("path", atr);
+					 metaArr.add(meta);
+					 BufferedWriter writer;
+						try {
+							writer = new BufferedWriter(new FileWriter(f));
+							writer.write(obj.toString());
+							writer.close();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+				
+			}
 			return "Uploaded ------> 100%";
 		}else {
 			return "Fajlovi sa takvom etenzijom su zabranjeni!";
 		}
 		
 		
+		
+	}
+	
+	@Override
+	public void printMeta(String json) throws Exception {
+		JSONObject obj= (JSONObject) readJsonSimpleDemo(json);
+		JSONArray metas= (JSONArray) obj.get("meta");
+		System.out.println(metas);
+		StringBuilder sb= new StringBuilder();
+		for(Object m:metas) {
+			if(m instanceof JSONObject) {
+				sb.append(((JSONObject) m).get("name")+"   | ");
+				sb.append(((JSONObject) m).get("creator")+"   | ");
+				sb.append(((JSONObject) m).get("parent")+"   | ");
+				sb.append(((JSONObject) m).get("date")+"   | ");
+				//sb.append(((JSONObject) m).get("path")+"   | ");
+
+				sb.append("\n");
+				
+			}
+		}
+		System.out.println(sb.toString());
 	}
 	
 	@Override
@@ -450,7 +611,6 @@ public class Folder extends Storage {
 		return path;
 	}
 
-	
 
 	
 

@@ -6,16 +6,14 @@ import java.util.List;
 
 import org.json.simple.JSONObject;
 
-public class User {
+public class User extends user.User {
 	
-	private String username;
-	private String password;
-	private List<String> privileges;
+	
 	
 	public User(String username, String password) {
 		super();
-		this.username = username;
-		this.password = password;
+		super.username = username;
+		super.password = password;
 		
 	}
 

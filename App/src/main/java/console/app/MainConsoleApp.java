@@ -90,8 +90,15 @@ public class MainConsoleApp {
 				name=ConsoleFunctions.question("Unesite ime koje zelite da dodelite folderu:");
 				String brojFoldera;
 				brojFoldera=ConsoleFunctions.question("Unesite broj koliko foldera zelite da napravite:");
-				
-				System.out.println(folder.uploadDir(name, currentFolder,brojFoldera));
+				boolean meta;
+				String metaString="";
+				while(!(metaString.equals("y") || metaString.equals("n"))) {
+					metaString=ConsoleFunctions.question("Da li zlite da cuvate i meta podatke kreiranog/nih foldera(y,n)?");
+				}
+				if(metaString.equals("y"))meta=true;
+				else meta = false;
+				 
+				System.out.println(folder.uploadDir(name, currentFolder, brojFoldera, meta, user, jsonUsers));
 				continue;
 				
 				//System.out.println("2");
@@ -99,8 +106,15 @@ public class MainConsoleApp {
 			if(answer.equals("3") && privileges.contains("upload_file")) {
 				String name;
 				name=ConsoleFunctions.question("Unesite ime koje zelite da dodelite fajlu:");
-				System.out.println(folder.uploadFile(name, currentFolder,file.getAbsolutePath()));
-				continue;
+				boolean meta;
+				String metaString="";
+				while(!(metaString.equals("y") || metaString.equals("n"))) {
+					metaString=ConsoleFunctions.question("Da li zlite da cuvate i meta podatke kreiranog fajla(y,n)?");
+				}
+				if(metaString.equals("y"))meta=true;
+				else meta = false;
+				 
+				System.out.println(folder.uploadFile(name, currentFolder, jsonUsers, meta, user));
 			}else
 			if(answer.equals("4") && privileges.contains("download_file")) {
 				String name;
@@ -189,6 +203,9 @@ public class MainConsoleApp {
 				}
 				
 				continue;
+			}else if(answer.equals("meta")) {
+				
+				folder.printMeta(jsonUsers);
 			}else if(answer.equals("end")){
 				break;
 			}else if(answer.equals("cmd")){
