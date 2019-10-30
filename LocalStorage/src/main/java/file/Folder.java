@@ -317,14 +317,23 @@ public class Folder extends Storage {
 		JSONArray metas= (JSONArray) obj.get("meta");
 		System.out.println(metas);
 		StringBuilder sb= new StringBuilder();
-		for(Object m:metas) {
-			if(m instanceof JSONObject) {
-				sb.append(((JSONObject) m).get("name")+"   | ");
-				sb.append(((JSONObject) m).get("creator")+"   | ");
-				sb.append(((JSONObject) m).get("parent")+"   | ");
-				sb.append(((JSONObject) m).get("date")+"   | ");
-				//sb.append(((JSONObject) m).get("path")+"   | ");
-
+		for(int i=0 ; i<metas.size(); i++){
+			if(metas.get(i) instanceof JSONObject) {
+				String path= (String) ((JSONObject) metas.get(i)).get("path");
+				if(!(new File(path).exists())) {
+					//int index = metas.indexOf(metas.get(i));
+					//System.out.println(index);
+					metas.remove(i);
+					
+				}else {
+					sb.append(((JSONObject) metas.get(i)).get("name")+"   | ");
+					sb.append(((JSONObject) metas.get(i)).get("creator")+"   | ");
+					sb.append(((JSONObject) metas.get(i)).get("parent")+"   | ");
+					sb.append(((JSONObject) metas.get(i)).get("date")+"   | ");
+					//sb.append(((JSONObject) m).get("path")+"   | ");
+				}
+				
+				
 				sb.append("\n");
 				
 			}
