@@ -66,6 +66,16 @@ public class User {
 			sb.append("\n");
 			sb.append("Izaberite "+cnt+" za dodavanje zabranjenih ekstenzija");
 		}
+		if(privileges.contains("download_file")) {
+			cnt=8;
+			sb.append("\n");
+			sb.append("Izaberite "+cnt+" za zipovnje fajlova");
+		}
+		if(privileges.contains("upload_file") || privileges.contains("add_directory")) {
+			cnt=9;
+			sb.append("\n");
+			sb.append("Izaberite "+cnt+" za zipovnje fajlova");
+		}
 		
 		sb.append("\n");
 		sb.append("Izaberite 'ls' za prikaz sadrzine trenutnog foldera");

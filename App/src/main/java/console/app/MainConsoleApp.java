@@ -66,10 +66,10 @@ public class MainConsoleApp {
 		while(!(answer.equals("end"))) {
 			//user.showMenuforUser(currentFolder);
 			System.out.println("");
-			System.out.println(GREEN_BOLD + "Ukucajte 'cmd' za prikaz komandi ovog korisnika" + ANSI_RESET);
+			System.out.println(  "Ukucajte 'cmd' za prikaz komandi" );
 			System.out.println("");
 			
-			System.out.println(BLUE_BOLD + currentFolder +" >" +  ANSI_RESET);
+			System.out.println(  currentFolder +" >" );
 			answer=reader.readLine();
 			List<String> privileges= user.getPrivileges();
 			//System.out.println(privilegije);
@@ -129,15 +129,40 @@ public class MainConsoleApp {
 				System.out.println(folder.delete(name, currentFolder));
 				
 				continue;
-			}if(answer.equals("7") && privileges.contains("add_user")) {
+			}else if(answer.equals("7") && privileges.contains("add_user")) {
 				String name;
 				name=ConsoleFunctions.question("Unesite extenziju koju zelite da zabranite (unos ide bez '.' [.exe : neispravno] [exe : ispravno] :");
 				folder.addForbiddenExtensions(name,jsonUsers);
 				continue;
-			}if(answer.equals("ls")) {
+			}else if(answer.equals("8") && privileges.contains("download_file")) {
+				String name;
+				name=ConsoleFunctions.question("Unesite folder ili fajl koji zelite da zipujete :");
+				String destination;
+				System.out.println("Ukoliko zelite da se zipovani folder nalazi u trenutnom folderu unesite opciju: '.' ");
+				destination=ConsoleFunctions.question("Ukoliko zelite da se zipovan drugom fajlu, unesite putanju do tog fajla");
+				if(destination.equals(".")) {
+					ConsoleFunctions.zip(currentFolder, name, currentFolder);
+				}else {
+					ConsoleFunctions.zip(currentFolder, name, destination);
+				}
+				continue;
+			}else if(answer.equals("9") && privileges.contains("upload_file") ) {
+				String name;
+				name=ConsoleFunctions.question("Unesite folder ili fajl koji zelite da anzipujete :");
+				String destination;
+				System.out.println("Ukoliko zelite da se anzipovanje izvrsi u trenutnom folderu unesite opciju: '.' ");
+				destination=ConsoleFunctions.question("Ukoliko zelite da se anzipovanje izvrsi u drugom fajlu, unesite putanju do tog fajla");
+				if(destination.equals(".")) {
+					ConsoleFunctions.unzipAndAdd(currentFolder+"\\"+name, currentFolder);
+				}else {
+					ConsoleFunctions.unzipAndAdd(currentFolder+"\\"+name, destination);
+				}
+				
+				continue;
+			}else if(answer.equals("ls")) {
 				folder.ls(currentFolder);
 				continue;
-			}if(answer.startsWith("cd")) {
+			}else if(answer.startsWith("cd")) {
 				String[] tokens = answer.split(" ");
 				if(tokens.length==1) {
 					System.out.println("Nepotpuna komanda");

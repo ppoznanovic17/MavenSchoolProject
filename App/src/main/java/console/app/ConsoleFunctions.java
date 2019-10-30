@@ -3,21 +3,28 @@ package console.app;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
+
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-
-
-
+import net.lingala.zip4j.ZipFile;
 import users.User;
 
 public class ConsoleFunctions {
@@ -182,4 +189,50 @@ public class ConsoleFunctions {
 	    return jsonParser.parse(reader);
 	}
 	
+	
+	
+	public static void zip(String file, String name, String dest) {
+		ZipFile zip= new ZipFile(dest+"\\"+name+".zip");	
+		File folder= new File(file+"\\"+name);
+		
+		if(folder.isDirectory()) {
+			folder= new File(file+"\\"+name);
+			File[] listofFiles= folder.listFiles();
+			for(File f: listofFiles) {
+				f= new File(file+"\\"+name);
+				try {
+					zip.addFolder(f);
+					System.out.println("Zipovanje uspelo!");
+				} catch (Exception e) {
+						System.out.println("Zipovanje nije uspelo");
+						return;
+				}
+			
+			}
+		}
+		if(folder.isFile()) {
+			try {
+				System.out.println("JESTE FAJL");
+				zip.addFile(folder);
+				System.out.println("Zipovanje uspelo!");
+			} catch (Exception e) {
+				System.out.println("Zipovanje nije uspelo");
+				return;
+			}
+		}
+	}
+	
+	public static void unzipAndAdd(String source, String destination) {
+		System.out.println(new File(source));
+	    try {
+		         
+		    	ZipFile file = new ZipFile(source);
+				file.extractAll(destination);
+				System.out.println("Anzipovanje uspelo!");
+		      
+		    } catch (Exception e) {
+		    	System.out.println("Anzipovanje nije uspelo");
+		    	return;
+		    }
+	}
 }
