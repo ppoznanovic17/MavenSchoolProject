@@ -87,8 +87,9 @@ public class Folder extends Storage {
 		JSONArray privilege= new JSONArray();
 		privilege.add("add_user");
 		privilege.add("add_directory");
-		privilege.add("upload_file");
-		privilege.add("download_file");
+		privilege.add("add_file");
+		privilege.add("download");
+		privilege.add("upload");
 		privilege.add("search_repository");
 		privilege.add("delete_file");
 		privilege.add("add_forbidden_extension");
@@ -122,9 +123,9 @@ public class Folder extends Storage {
 	}
 
 	@Override
-	public String uploadDir(String fileName, String path,String number,boolean metaBool, User u,String users) {
+	public String addDir(String fileName, String path,String number,boolean metaBool, User u,String users) throws IOException {
 		int broj=Integer.parseInt(number);
-		
+		BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
 		
 		if(broj==0) {
 			return "Upload [ERROR]";
@@ -164,6 +165,26 @@ public class Folder extends Storage {
 						 meta.put("date", atr);
 						 atr= f.getAbsolutePath().toString();
 						 meta.put("path", atr);
+						 //metas.add(meta);
+						 String podatak="";
+						 System.out.println("Unesite naziv i sadrzaj metapodatka: ");
+						 System.out.println("\n");
+						 while(!(podatak.equals("submit"))) {
+							 if(podatak.equals("submit")) {
+								 
+								 break;
+							 }
+							 System.out.println("Naziv metapodatka: ");
+							 String name=reader.readLine();
+							 
+							 System.out.println("Sadrzaj metapodatka: ");
+							 String atribut=reader.readLine();
+							 meta.put(name, atribut);
+							 
+							 System.out.println("Ako zelite da zavrsite sa unosom metapodataka, napisite 'submit'");
+							 podatak=reader.readLine();
+							 
+						 }
 						 metas.add(meta);
 					}
 				}else {
@@ -183,10 +204,31 @@ public class Folder extends Storage {
 						 meta.put("date", atr);
 						 atr= f.getAbsolutePath().toString();
 						 meta.put("path", atr);
-						 System.out.println(i);
+						 //System.out.println(i);
 						// System.out.println("cao"+meta.get("name"));
+						 
+						 //metas.add(meta);
+						 //System.out.println(metas.toString());
+						 String podatak="";
+						 System.out.println("Unesite naziv i sadrzaj metapodatka: ");
+						 System.out.println("\n");
+						 while(!(podatak.equals("submit"))) {
+							 if(podatak.equals("submit")) {
+								 
+								 break;
+							 }
+							 System.out.println("Naziv metapodatka: ");
+							 String name=reader.readLine();
+							 
+							 System.out.println("Sadrzaj metapodatka: ");
+							 String atribut=reader.readLine();
+							 meta.put(name, atribut);
+							 
+							 System.out.println("Ako zelite da zavrsite sa unosom metapodataka, napisite 'submit'");
+							 podatak=reader.readLine();
+							 
+						 }
 						 metas.add(meta);
-						 System.out.println(metas.toString());
 						 obj.put("meta", metas);
 						 String a="";
 						 if(i==broj-1) {
@@ -210,7 +252,7 @@ public class Folder extends Storage {
 				
 				writer.write(obj.toString());
 				System.out.println("------------------------------------------------------------");
-				System.out.println(obj.toString());
+				//System.out.println(obj.toString());
 				writer.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -227,13 +269,14 @@ public class Folder extends Storage {
 	}
 
 	@Override
-	public String uploadFile(String fileName, String path,String f,boolean metaBool, User u) throws Exception {
+	public String addFile(String fileName, String path,String f,boolean metaBool, User u) throws Exception {
 		List<String> ext= new ArrayList<String>();
 		File file= new File(path+"\\"+fileName);
-		System.out.println("----->"+f);
-		System.out.println(file.getAbsolutePath().toString());
+		//System.out.println("----->"+f);
+		//System.out.println(file.getAbsolutePath().toString());
 		JSONObject obj= (JSONObject) readJsonSimpleDemo(f);
 		Object arr= obj.get("ext");
+		BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
 		if(arr instanceof JSONArray) {
 			for(Object a:((JSONArray)arr)) {
 				if(a instanceof String) {
@@ -262,6 +305,25 @@ public class Folder extends Storage {
 					 meta.put("date", atr);
 					 atr= file.getAbsolutePath().toString();
 					 meta.put("path", atr);
+					 String podatak="";
+					 System.out.println("Unesite naziv i sadrzaj metapodatka: ");
+					 System.out.println("\n");
+					 while(!(podatak.equals("submit"))) {
+						 if(podatak.equals("submit")) {
+							 
+							 break;
+						 }
+						 System.out.println("Naziv metapodatka: ");
+						 String name=reader.readLine();
+						 
+						 System.out.println("Sadrzaj metapodatka: ");
+						 String atribut=reader.readLine();
+						 meta.put(name, atribut);
+						 
+						 System.out.println("Ako zelite da zavrsite sa unosom metapodataka, napisite 'submit'");
+						 podatak=reader.readLine();
+						 
+					 }
 					 metaArr.add(meta);
 					 BufferedWriter writer;
 						try {
@@ -345,7 +407,7 @@ public class Folder extends Storage {
 					sb.append(((JSONObject) metas.get(i)).get("creator")+"   | ");
 					sb.append(((JSONObject) metas.get(i)).get("parent")+"   | ");
 					sb.append(((JSONObject) metas.get(i)).get("date")+"   | ");
-					//sb.append(((JSONObject) m).get("path")+"   | ");
+					
 					sb.append("\n");
 					
 				}else {
@@ -419,18 +481,25 @@ public class Folder extends Storage {
 	@Override
 	public String download(String fileName, String path, String current) {
 		File folder=new File(current);
+		File destinacija=new File(path);
 		File[] listofFiles=folder.listFiles();
 		for(File f: listofFiles) {
 			if(f.getName().equals(fileName)) {
 				if(f.isDirectory()) {
-					File novi= new File(path+"\\"+fileName);
-					novi.mkdir();
+					
+					try {
+						FileUtils.copyDirectory(f, destinacija);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					//File novi= new File(path+"\\"+fileName);
+					//novi.mkdir();
 					return "Uspesno preuzet folder.";
 				}
 				if(f.isFile()) {
-					File novi=new File(path+"\\"+fileName);
 					try {
-						novi.createNewFile();
+						FileUtils.copyFileToDirectory(f, destinacija);
 						return "Uspesno preuzet fajl.";
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
@@ -623,12 +692,12 @@ public class Folder extends Storage {
 		for(int i=2; i< command.length;i++) {
 			pom=pom+ " "+command[i];
 		}
-		System.out.println("root:" +root);
-		System.out.println("curr:" + path);
-		System.out.println(pom);
+		//System.out.println("root:" +root);
+		//System.out.println("curr:" + path);
+		//System.out.println(pom);
 		if(pom.equals("..")) {
 			String help=path.substring(0,path.lastIndexOf(File.separator));
-			System.out.println("help: " +help);
+			//System.out.println("help: " +help);
 			if(root.equals(path)) {
 				System.out.println("Vec se nalazite u root-u repozitorijumu");
 				return root;
@@ -650,6 +719,41 @@ public class Folder extends Storage {
 		System.out.println("Nevalidan unos. Lokacija je ostala nepromenjena!");
 		System.out.println("Trenutna lokacija: " +path);
 		return path;
+	}
+
+	@Override
+	public String upload(String fileName, String upload_path, String current) {
+		
+		File folder=new File(current);
+		File destinacija=new File(upload_path);
+		File[] listofFiles=folder.listFiles();
+		for(File f: listofFiles) {
+			if(f.getName().equals(fileName)) {
+				if(f.isDirectory()) {
+					
+					try {
+						FileUtils.copyDirectory(f, destinacija);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					return "Uspesno uploadovan folder.";
+				}
+				if(f.isFile()) {					
+					try {
+						FileUtils.copyFileToDirectory(f, destinacija);;
+						return "Uspesno uploadovan fajl.";
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		
+		
+		return "Upload nije bio uspesan.";
 	}
 
 

@@ -17,7 +17,8 @@ public class MainConsoleApp {
 	 * @Petar & @Bogdan
 	 * 
 	 * C:\Users\Peca\Desktop\html css skripte
-	 * C:\Users\Bogi\Desktop
+	 * 
+	 * C:\Users\Bogi\Desktop\lokalno
 	 * */
 	
 	/* za koriscenje ovih boja u konzoli skini ANSI escape u marketplace-u*/
@@ -42,7 +43,7 @@ public class MainConsoleApp {
 	    substring(0,absolutePath.lastIndexOf(File.separator));
 		currentFolder= root;
 		
-		System.out.println(file.getAbsolutePath().toString());
+		//System.out.println(file.getAbsolutePath().toString());
 		//log in
 		System.out.println("Kako biste pristupili repozitorijumu molimo Vas da se ulogujete\n");
         try {
@@ -98,12 +99,12 @@ public class MainConsoleApp {
 				if(metaString.equals("y"))meta=true;
 				else meta = false;
 				 
-				System.out.println(folder.uploadDir(name, currentFolder, brojFoldera, meta, user, jsonUsers));
+				System.out.println(folder.addDir(name, currentFolder, brojFoldera, meta, user, jsonUsers));
 				continue;
 				
 				//System.out.println("2");
 			}else
-			if(answer.equals("3") && privileges.contains("upload_file")) {
+			if(answer.equals("3") && privileges.contains("add_file")) {
 				String name;
 				name=ConsoleFunctions.question("Unesite ime koje zelite da dodelite fajlu:");
 				boolean meta;
@@ -114,17 +115,24 @@ public class MainConsoleApp {
 				if(metaString.equals("y"))meta=true;
 				else meta = false;
 				 
-				System.out.println(folder.uploadFile(name, currentFolder, jsonUsers, meta, user));
+				System.out.println(folder.addFile(name, currentFolder, jsonUsers, meta, user));
 			}else
-			if(answer.equals("4") && privileges.contains("download_file")) {
+			if(answer.equals("4") && privileges.contains("download")) {
 				String name;
 				name=ConsoleFunctions.question("Unesite ime fajla koji zelite da preuzmete:");
 				String putanja;
 				putanja=ConsoleFunctions.question("Unesite putanju na kojoj zelite da se fajl preuzme: ");
 				System.out.println(folder.download(name, putanja,currentFolder));
 				continue;
+			}
+			else if(answer.equals("5") && privileges.contains("upload")) {
+				String name;
+				name=ConsoleFunctions.question("Unesite ime fajla koji zelite da uploadujete: ");
+				String putanja;
+				putanja=ConsoleFunctions.question("Unesite putanju na kojoj zelite da fajl bude uploadovan: ");
+				System.out.println(folder.upload(name, putanja, currentFolder));
 			}else
-			if(answer.equals("5") && privileges.contains("search_repository")) {
+			if(answer.equals("6") && privileges.contains("search_repository")) {
 				//System.out.println("5");
 				String opcija=ConsoleFunctions.question("Unesite opciju pretrage: "+"\n"+
 				"1 za pretragu fajla po imenu u trenutnom ali i u svim pod direktorijumima (ime fajla sadrzi unesenu rec )"+"\n"+
@@ -154,18 +162,18 @@ public class MainConsoleApp {
 				}
 				continue;
 			}else
-			if(answer.equals("6") && privileges.contains("delete_file")) {
+			if(answer.equals("7") && privileges.contains("delete_file")) {
 				String name;
-				name=ConsoleFunctions.question("Unesite ime koje zelite da dodelite fajlu:");
+				name=ConsoleFunctions.question("Unesite ime fajla koji zelite da bude obrisan:");
 				System.out.println(folder.delete(name, currentFolder));
 				
 				continue;
-			}else if(answer.equals("7") && privileges.contains("add_user")) {
+			}else if(answer.equals("8") && privileges.contains("add_user")) {
 				String name;
 				name=ConsoleFunctions.question("Unesite extenziju koju zelite da zabranite (unos ide bez '.' [.exe : neispravno] [exe : ispravno] :");
 				folder.addForbiddenExtensions(name,jsonUsers);
 				continue;
-			}else if(answer.equals("8") && privileges.contains("download_file")) {
+			}else if(answer.equals("9") && privileges.contains("download")) {
 				String name;
 				name=ConsoleFunctions.question("Unesite folder ili fajl koji zelite da zipujete :");
 				String destination;
@@ -177,7 +185,7 @@ public class MainConsoleApp {
 					ConsoleFunctions.zip(currentFolder, name, destination);
 				}
 				continue;
-			}else if(answer.equals("9") && privileges.contains("upload_file") ) {
+			}else if(answer.equals("10") && privileges.contains("upload") ) {
 				String name;
 				name=ConsoleFunctions.question("Unesite folder ili fajl koji zelite da anzipujete :");
 				String destination;

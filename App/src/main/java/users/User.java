@@ -39,38 +39,43 @@ public class User extends user.User {
 			sb.append("\n");
 			sb.append("Izaberite "+cnt+" za dodavanje novog foldera");
 		}
-		if(privileges.contains("upload_file")) {
+		if(privileges.contains("add_file")) {
 			cnt=3;
 			sb.append("\n");
 			sb.append("Izaberite "+cnt+" za dodavanje novog fajla");
 		}
-		if(privileges.contains("download_file")) {
+		if(privileges.contains("download")) {
 			cnt=4;
 			sb.append("\n");
 			sb.append("Izaberite "+cnt+" za preuzimanje fajla");
 		}
-		if(privileges.contains("search_repository")) {
+		if(privileges.contains("upload")) {
 			cnt=5;
+			sb.append("\n");
+			sb.append("Izaberite "+cnt+ " za upload fajla");
+		}
+		if(privileges.contains("search_repository")) {
+			cnt=6;
 			sb.append("\n");
 			sb.append("Izaberite "+cnt+" za pretragu repozitorijuma");
 		}
 		if(privileges.contains("delete_file")) {
-			cnt=6;
+			cnt=7;
 			sb.append("\n");
 			sb.append("Izaberite "+cnt+" za brisanje fajla");
 		}
 		if(privileges.contains("add_user")) {
-			cnt=7;
+			cnt=8;
 			sb.append("\n");
 			sb.append("Izaberite "+cnt+" za dodavanje zabranjenih ekstenzija");
 		}
-		if(privileges.contains("download_file")) {
-			cnt=8;
+		if(privileges.contains("download")) {
+			cnt=9;
 			sb.append("\n");
 			sb.append("Izaberite "+cnt+" za zipovnje fajlova");
 		}
-		if(privileges.contains("upload_file") || privileges.contains("add_directory")) {
-			cnt=9;
+		if(privileges.contains("upload") || privileges.contains("add_directory")) {
+			cnt=10;
 			sb.append("\n");
 			sb.append("Izaberite "+cnt+" za anzipovanje fajlova");
 		}

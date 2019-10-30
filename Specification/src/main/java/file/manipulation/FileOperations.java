@@ -21,12 +21,13 @@ public interface FileOperations {
 	void printMeta(String path) throws Exception;
 
 
-	String uploadDir(String fileName, String path, String number, boolean meta, User u, String users);
+	String addDir(String fileName, String path, String number, boolean meta, User u, String users) throws IOException;
 
 	
 
-	String uploadFile(String fileName, String path, String f, boolean metaBool, User u) throws Exception;
+	String addFile(String fileName, String path, String f, boolean metaBool, User u) throws Exception;
 
+	String upload(String fileName, String upload_path, String filePath);
 	
 	
 }

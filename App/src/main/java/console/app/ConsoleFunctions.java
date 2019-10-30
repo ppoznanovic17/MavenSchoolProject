@@ -78,12 +78,12 @@ public class ConsoleFunctions {
 			 users= (JSONArray) obj.get("users");
 			for(Object o: users){
 			    if ( o instanceof JSONObject ) {
-			    	 System.out.println("usao1");
-			    	 System.out.println(username);
-			    	 System.out.println(((JSONObject) o).get("username").toString());
+			    	 //System.out.println("usao1");
+			    	 //System.out.println(username);
+			    	// System.out.println(((JSONObject) o).get("username").toString());
 			    	if(((JSONObject) o).get("username").toString().equals(username) && ((JSONObject) o).get("password").toString().equals(password)){
 			    	 JSONArray privile= (JSONArray) ((JSONObject) o).get("privileges");
-			    	 System.out.println("usao2");
+			    	// System.out.println("usao2");
 			    	 for(Object pri:  privile) {
 			    		 if(pri instanceof String) {
 			    			 privileges.add((String) pri);
@@ -92,7 +92,7 @@ public class ConsoleFunctions {
 			    	 }
 			    	 User u= new User(username, password);
 				 		u.setPrivileges(privileges);
-				 		System.out.println("LOOOG IN");
+				 		//System.out.println("LOOOG IN");
 				 		return u;
 			    	}
 			    	
@@ -132,8 +132,8 @@ public class ConsoleFunctions {
 			String privilegija = "";
 			while(!(privilegija.equals("submit"))) {
 				privilegija=reader.readLine();
-				if(!(privilegija.equals("add_user") || privilegija.equals("add_directory") || privilegija.equals("upload_file") 
-						  || privilegija.equals("delete_file") || privilegija.equals("search_repository") || privilegija.equals("download_file") || privilegija.equals("submit"))) {
+				if(!(privilegija.equals("add_user") || privilegija.equals("add_directory") || privilegija.equals("add_file") || privilegija.equals("upload")
+						  || privilegija.equals("delete_file") || privilegija.equals("search_repository") || privilegija.equals("download") || privilegija.equals("submit"))) {
 							System.out.println("Niste uneli tacno ime privilegije. Pokusajte ponovo");
 						}
 						else if(privileges.contains(privilegija)) {
@@ -144,7 +144,7 @@ public class ConsoleFunctions {
 						}else {
 							privileges.add(privilegija);
 							System.out.println("Privilegija dodata.");
-							System.out.println("(Privilegije: add_user, add_directory, upload_file, download_file, search_repository, delete_file)");
+							System.out.println("(Privilegije: add_user, add_directory, add_file, download, upload, search_repository, delete_file)");
 							System.out.println("");
 							System.out.println("Ako zelite da zavrsite sa dodavanjem korisnika napisite 'submit'. ");
 						}
