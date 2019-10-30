@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.json.simple.JSONArray;
@@ -59,9 +60,11 @@ public class MainConsoleApp {
 		}
         String password=reader.readLine();
         user=ConsoleFunctions.logIn(file, username, password);
-        System.out.println(user.getPrivileges());
-        System.out.println(user.toString());
-
+       /* System.out.println(user.getPrivileges());
+        System.out.println(user.toString());*/
+       List<File> files= new ArrayList<File>();
+        
+        
         String answer= "";
 		while(!(answer.equals("end"))) {
 			//user.showMenuforUser(currentFolder);
@@ -110,14 +113,28 @@ public class MainConsoleApp {
 			if(answer.equals("5") && privileges.contains("search_repository")) {
 				//System.out.println("5");
 				String opcija=ConsoleFunctions.question("Unesite opciju pretrage: "+"\n"+
-				"1 za pretragu preko ekstenzije"+"\n"+
-				"2 za pretragu preko metapodataka");
+				"1 za pretragu fajla po imenu u trenutnom ali i u svim pod direktorijumima (ime fajla sadrzi unesenu rec )"+"\n"+
+				"2 za pretragu fajla po imenu u trenutnom ali i u svim pod direktorijumima (ime fajla isto kao unesena rec)"+"\n"+
+				"3 za pretragu fajla po ekstenziji u trenutnom direktorijumu (ekstenzije pisati bez '.' npr. exe,txt itd.)"+"\n"+
+				"4 za pretragu fajla po ekstenziji u trenutnom ali i u svim pod direktorijumima  (ekstenzije pisati bez '.' npr. exe,txt itd.)");
 				if(opcija.equals("1")) {
-					String ekstenzija=ConsoleFunctions.question("Unesite ekstenziju za pretragu (bez tacke):");
-					
-					System.out.println(folder.searchByExtension(ekstenzija,currentFolder));
+					String name=ConsoleFunctions.question("Unesite ime fajla za pretragu:");
+					List<File> list= new ArrayList<File>();
+					folder.searchByName1(list, currentFolder, name);
 				}else if(opcija.equals("2")) {
-					folder.searchByMetaData(0);
+					String name=ConsoleFunctions.question("Unesite ime fajla za pretragu:");
+					List<File> list= new ArrayList<File>();
+					folder.searchByName2(list, currentFolder, name);
+				}
+				else if(opcija.equals("3")) {
+					String extension=ConsoleFunctions.question("Unesite ime ekstenzije za pretragu (ukoliko zelite da izaberete foldere tj. direktorijume ukucajte 'dir'):");
+					
+					System.out.println(folder.searchByExtension1(extension, currentFolder));
+				}
+				else if(opcija.equals("4")) {
+					String name=ConsoleFunctions.question("Unesite ime ekstenzije za pretragu (ukoliko zelite da izaberete foldere tj. direktorijume ukucajte 'dir'):");
+					List<File> list= new ArrayList<File>();
+					folder.searchByName2(list, currentFolder, name);
 				}else {
 					System.out.println("Opcija ne postoji.");
 				}

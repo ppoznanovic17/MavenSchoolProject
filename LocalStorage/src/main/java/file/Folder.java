@@ -9,6 +9,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -242,38 +243,132 @@ public class Folder extends Storage {
 	}
 
 	@Override
-	public void searchByName(String fileName) {
-		// TODO Auto-generated method stub
+	public void searchByName1(List<File> files,String dir ,String name) {
+		
+		returnAllFiles(files, new File(dir));
+		
+		for(File f : files) {
+			if(f.getName().contains(name))
+	    	System.out.println(f.getName()+" -------------> " + f.getAbsolutePath().toString());
+	    }
+		
+	}
+	
+	@Override
+	public void searchByName2(List<File> files,String dir ,String name) {
+		
+		returnAllFiles(files, new File(dir));
+		
+		for(File f : files) {
+			if(f.getName().equals(name))
+	    	System.out.println(f.getName()+" -------------> " + f.getAbsolutePath().toString());
+	    }
 		
 	}
 
 	@Override
-	public String searchByExtension(String extension, String path) {
-		StringBuilder sb=new StringBuilder();
-		int cnt=0;
-		sb.append("Lista fajlova sa trazenom ekstenzijom: ");
-		sb.append("\n");
+	public String searchByExtension1(String extension, String path) {
 		File folder=new File(path);
+		StringBuilder sb = new StringBuilder();
+		
 		File[] listOfFiles=folder.listFiles();
-		for(File f:listOfFiles) {
-			if(f.getName().substring(f.getName().indexOf(".")+1, f.getName().length()).equals(extension)) {
-				sb.append(f.getName());
-				sb.append("\n");
-				cnt++;
-			}
-		}
-		if(cnt!=0) {
+		
+		if(extension.equals("dir")) {
+			for(File f : listOfFiles) {
+				if(!(f.getName().contains(".")))
+		    	sb.append(f.getName()+" -------------> " + f.getAbsolutePath().toString());
+				
+		    }
 			return sb.toString();
 		}
+			
+		if(listOfFiles!=null) {
+			
+			for(File f:listOfFiles) {
+			
+				if(f.getName().endsWith("."+extension)) {
+					//files.add(f);
+					//System.out.println(f);
+					//System.out.println("usao");
+					
+						sb.append(f.getName());
+						for(int i=0; i<20-f.getName().length();i++) {
+							sb.append(" ");
+						}
+						sb.append("--------------->   ");
+						sb.append(f.getAbsolutePath().toString());
+						sb.append("\n");
+					
+					
+				}
+			}
+			return sb.toString();
+			
+			
+		}
+		
 		return "Ne postoji fajl sa takvom ekstenzijom u trenutnom direktorijumu!";
 	}
 
+	
 	@Override
-	public void searchByMetaData(int metaOrNo) {
-		// TODO Auto-generated method stub
+	public void searchByExtension2(List<File> files, String dir, String name) {
+		returnAllFiles(files, new File(dir));
+		if(name.equals("dir")) {
+			for(File f : files) {
+				if(!(f.getName().contains(".")))
+		    	System.out.println(f.getName()+" -------------> " + f.getAbsolutePath().toString());
+				return;
+		    }
+
+		}
+		for(File f : files) {
+			if(f.getName().endsWith("."+name))
+	    	System.out.println(f.getName()+" -------------> " + f.getAbsolutePath().toString());
+	    }
+	}
+	
+	private static List<File> returnAllFiles(List<File> files, File dir) {
+		/*if (files == null)
+	        files = new LinkedList<File>();
 		
+		
+		
+	    if (!dir.isDirectory())
+	    {
+	        files.add(dir);
+	        return files;
+	    }
+	    
+	    for (File file : dir.listFiles())
+	        returnAllFiles(files, file);
+	    return files;*/
+	    
+		
+		    if(dir.isFile()){
+		        files.add(dir);
+		    }else{
+		        files.add(dir);
+		        File f[] = dir.listFiles();
+		        for(File dirOrFile: f){
+		        	returnAllFiles(files,dirOrFile);
+		        }
+		    }
+		
+		return files;
+	   
 	}
 
+	public static  void test(List<File> files , String dir) {
+		 
+		returnAllFiles(files, new File(dir));
+		
+		for(File f : files) {
+				
+		    	System.out.println(f.getName()+" -------------> " + f.getAbsolutePath().toString());
+		    }
+	}
+	
 	@Override
 	public void addForbiddenExtensions(String e,String path) throws Exception {
 		JSONObject obj= (JSONObject) readJsonSimpleDemo(path);

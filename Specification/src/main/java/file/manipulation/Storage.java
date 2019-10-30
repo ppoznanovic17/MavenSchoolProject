@@ -33,5 +33,5 @@ public abstract class Storage implements FileOperations,FileSearch {
 		this.path = path;
 	}
 	
-	abstract public void addForbiddenExtensions(String e,String path) throws Exception;
+	
 }
