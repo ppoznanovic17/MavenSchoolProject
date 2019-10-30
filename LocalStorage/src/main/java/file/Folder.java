@@ -135,7 +135,7 @@ public class Folder extends Storage {
 		try {
 			obj = (JSONObject) readJsonSimpleDemo(users);
 			metas= (JSONArray) obj.get("meta");
-			System.out.println(metas);
+			//System.out.println(metas);
 		} catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -170,7 +170,7 @@ public class Folder extends Storage {
 					 f= new File(path+"\\"+fileName+i);
 					 if(metaBool) {
 						 String atr="Ime fajla: " + fileName+i;
-						
+						meta= new JSONObject();
 						meta.put("name", atr);
 						atr= "User who made it: "+u.getUsername();
 						meta.put("creator", atr);
@@ -183,24 +183,39 @@ public class Folder extends Storage {
 						 meta.put("date", atr);
 						 atr= f.getAbsolutePath().toString();
 						 meta.put("path", atr);
+						 System.out.println(i);
+						// System.out.println("cao"+meta.get("name"));
 						 metas.add(meta);
+						 System.out.println(metas.toString());
+						 obj.put("meta", metas);
+						 String a="";
+						 if(i==broj-1) {
+								a=obj.toString();
+							}
+						 
 					}
+					
+					
 				}
 				
 				f.mkdir();
 				
 			}
 			
-			BufferedWriter writer;
+			
+			 BufferedWriter writer;
 			try {
 				writer = new BufferedWriter(new FileWriter(users));
+				
+				
 				writer.write(obj.toString());
+				System.out.println("------------------------------------------------------------");
+				System.out.println(obj.toString());
 				writer.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
 			
 			
 			
@@ -314,31 +329,45 @@ public class Folder extends Storage {
 	@Override
 	public void printMeta(String json) throws Exception {
 		JSONObject obj= (JSONObject) readJsonSimpleDemo(json);
-		JSONArray metas= (JSONArray) obj.get("meta");
-		System.out.println(metas);
+		JSONArray metas=(JSONArray) obj.get("meta");
+		JSONArray pom= new JSONArray();
+		//System.out.println(metas);
 		StringBuilder sb= new StringBuilder();
 		for(int i=0 ; i<metas.size(); i++){
 			if(metas.get(i) instanceof JSONObject) {
 				String path= (String) ((JSONObject) metas.get(i)).get("path");
-				if(!(new File(path).exists())) {
+				if((new File(path).exists())) {
 					//int index = metas.indexOf(metas.get(i));
 					//System.out.println(index);
-					metas.remove(i);
-					
-				}else {
+					pom.add(metas.get(i));
+					//System.out.println(i);
 					sb.append(((JSONObject) metas.get(i)).get("name")+"   | ");
 					sb.append(((JSONObject) metas.get(i)).get("creator")+"   | ");
 					sb.append(((JSONObject) metas.get(i)).get("parent")+"   | ");
 					sb.append(((JSONObject) metas.get(i)).get("date")+"   | ");
 					//sb.append(((JSONObject) m).get("path")+"   | ");
+					sb.append("\n");
+					
+				}else {
+					
 				}
 				
 				
-				sb.append("\n");
+				
 				
 			}
 		}
-		System.out.println(sb.toString());
+		obj.put("meta", pom);
+		BufferedWriter writer;
+		try {
+			writer = new BufferedWriter(new FileWriter(json));
+			writer.write(obj.toString());
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.print(sb.toString());
 	}
 	
 	@Override
@@ -379,6 +408,9 @@ public class Folder extends Storage {
 				}
 				
 			}
+			
+			
+			
 		}
 		
         return "Ime koje ste uneli ne moze da se pronadje u direktorijumu.";

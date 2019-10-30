@@ -72,7 +72,7 @@ public class User extends user.User {
 		if(privileges.contains("upload_file") || privileges.contains("add_directory")) {
 			cnt=9;
 			sb.append("\n");
-			sb.append("Izaberite "+cnt+" za zipovnje fajlova");
+			sb.append("Izaberite "+cnt+" za anzipovanje fajlova");
 		}
 		
 		sb.append("\n");
