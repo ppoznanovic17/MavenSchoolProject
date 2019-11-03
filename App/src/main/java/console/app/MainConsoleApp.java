@@ -11,6 +11,7 @@ import org.json.simple.JSONArray;
 
 import file.Folder;
 import file.manipulation.Storage;
+import sun.security.util.Resources;
 import users.User;
 public class MainConsoleApp {
 	/*
@@ -64,7 +65,7 @@ public class MainConsoleApp {
 			System.out.println(  "Ukucajte 'cmd' za prikaz komandi" );
 			System.out.println("");
 			
-			System.out.println(  currentFolder +" >" );
+			System.out.println(currentFolder + " >" );
 			answer=reader.readLine();
 			List<String> privileges= user.getPrivileges();
 			
@@ -89,7 +90,7 @@ public class MainConsoleApp {
 				}
 				if(metaString.equals("y"))meta=true;
 				else meta = false;
-				 
+				//String path = "help";
 				System.out.println(folder.addDir(name, currentFolder, brojFoldera, meta, user, jsonUsers));
 				continue;
 				
