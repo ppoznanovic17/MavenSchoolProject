@@ -36,39 +36,30 @@ public class MainConsoleApp {
 		ConsoleFunctions.write("Dobrodosli");
 		//ucitavanje json fajla (univerzalno)
 		 currentFolder=ConsoleFunctions.question("Unesite putanju do repozitorijuma:");
+		 folder.setPath(currentFolder);
 		File file= folder.getJson(currentFolder);
 		jsonUsers= file.getAbsolutePath().toString();
 		String absolutePath = file.getAbsolutePath();
-		root=absolutePath.
-	    substring(0,absolutePath.lastIndexOf(File.separator));
-		currentFolder= root;
+		/*root=absolutePath.
+	    substring(0,absolutePath.lastIndexOf(File.separator));*/
+		root = currentFolder;
+		System.out.println(root+"/");
 		
-		//System.out.println(file.getAbsolutePath().toString());
-		//log in
 		System.out.println("Kako biste pristupili repozitorijumu molimo Vas da se ulogujete\n");
-        try {
-			System.out.println("Username: ");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-        String username=reader.readLine();
-        try {
-			System.out.println("Password: ");
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        
+		System.out.println("Username: ");
+		String username=reader.readLine();
+		System.out.println("Password: ");
         String password=reader.readLine();
         user=ConsoleFunctions.logIn(file, username, password);
-       /* System.out.println(user.getPrivileges());
-        System.out.println(user.toString());*/
+      
        List<File> files= new ArrayList<File>();
         
         
         String answer= "";
+        
 		while(!(answer.equals("end"))) {
-			//user.showMenuforUser(currentFolder);
+			
 			System.out.println("");
 			System.out.println(  "Ukucajte 'cmd' za prikaz komandi" );
 			System.out.println("");
@@ -76,12 +67,12 @@ public class MainConsoleApp {
 			System.out.println(  currentFolder +" >" );
 			answer=reader.readLine();
 			List<String> privileges= user.getPrivileges();
-			//System.out.println(privilegije);
+			
 			if(answer.equals("1") && privileges.contains("add_user")) {
 				try {
 					ConsoleFunctions.singUpAnotherUser(file);
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
+					
 					e.printStackTrace();
 				}
 				continue;
@@ -103,6 +94,7 @@ public class MainConsoleApp {
 				continue;
 				
 				//System.out.println("2");
+				
 			}else
 			if(answer.equals("3") && privileges.contains("add_file")) {
 				String name;
@@ -116,6 +108,7 @@ public class MainConsoleApp {
 				else meta = false;
 				 
 				System.out.println(folder.addFile(name, currentFolder, jsonUsers, meta, user));
+				continue;
 			}else
 			if(answer.equals("4") && privileges.contains("download")) {
 				String name;

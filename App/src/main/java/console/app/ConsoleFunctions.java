@@ -92,7 +92,7 @@ public class ConsoleFunctions {
 			    	 }
 			    	 User u= new User(username, password);
 				 		u.setPrivileges(privileges);
-				 		//System.out.println("LOOOG IN");
+				 		System.out.println(u.getUsername() + "      " + privileges);
 				 		return u;
 			    	}
 			    	
@@ -104,8 +104,9 @@ public class ConsoleFunctions {
 		
 		
 		User u= new User(username, password);
-		u.setPrivileges(privileges);
 		
+		u.setPrivileges(privileges);
+		System.out.println(u.getUsername() + "      " + privileges);
 		return u;
 		
 	}

@@ -14,6 +14,8 @@ public abstract class Storage implements FileOperations,FileSearch {
 		// TODO Auto-generated constructor stub
 	}
 	
+	
+	
 	public Storage(String path) {
 		this.path=path;
 	}
