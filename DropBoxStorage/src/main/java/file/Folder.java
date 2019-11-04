@@ -24,6 +24,8 @@ import org.json.simple.parser.JSONParser;
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
+import com.dropbox.core.v2.files.DownloadZipBuilder;
+import com.dropbox.core.v2.files.DownloadZipResult;
 import com.dropbox.core.v2.files.FileMetadata;
 import com.dropbox.core.v2.files.ListFolderContinueErrorException;
 import com.dropbox.core.v2.files.ListFolderErrorException;
@@ -33,6 +35,7 @@ import com.dropbox.core.v2.files.UploadErrorException;
 
 import dropbox.Connection;
 import file.manipulation.Storage;
+import net.lingala.zip4j.ZipFile;
 import user.User;
 
 public class Folder extends Storage {
@@ -196,11 +199,22 @@ public class Folder extends Storage {
 	@Override
 	public String download(String fileName, String download_path, String filePath) {
 		DbxClientV2 client = c.getClient();
+		
 		try {
+			if(fileName.contains(".")) {
 			OutputStream out = new FileOutputStream(download_path+"\\"+fileName);
 			FileMetadata metadata = client.files().downloadBuilder("/"+fileName).download(out);
 			return "Uspesno preuzet fajl.";
-		} catch (DbxException e) {
+			}else {
+				OutputStream out = new FileOutputStream(download_path+"\\"+fileName+".zip");
+				DownloadZipResult metadata = client.files().downloadZip("/"+fileName).download(out);
+				File f= new File(download_path+"\\"+fileName+".zip");
+				unzipAndAdd(f.getAbsolutePath().toString(), download_path);
+				
+				return "Uspesno preuzet folder.";
+			}
+			
+			} catch (DbxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			//return "ERROR -> Takav fajl ne postoji u repozitorijumu.";
@@ -745,6 +759,52 @@ public class Folder extends Storage {
 		}
 		
 		
+	}
+	
+	public static void zip(String file, String name, String dest) {
+		ZipFile zip= new ZipFile(dest+"\\"+name+".zip");	
+		File folder= new File(file+"\\"+name);
+		
+		if(folder.isDirectory()) {
+			folder= new File(file+"\\"+name);
+			File[] listofFiles= folder.listFiles();
+			for(File f: listofFiles) {
+				f= new File(file+"\\"+name);
+				try {
+					zip.addFolder(f);
+					System.out.println("Zipovanje uspelo!");
+				} catch (Exception e) {
+						System.out.println("Zipovanje nije uspelo");
+						return;
+				}
+			
+			}
+		}
+		if(folder.isFile()) {
+			try {
+				System.out.println("JESTE FAJL");
+				zip.addFile(folder);
+				System.out.println("Zipovanje uspelo!");
+			} catch (Exception e) {
+				System.out.println("Zipovanje nije uspelo");
+				return;
+			}
+		}
+	}
+	
+	public static void unzipAndAdd(String source, String destination) {
+		System.out.println(new File(source));
+	    try {
+		         
+		    	ZipFile file = new ZipFile(source);
+				file.extractAll(destination);
+				System.out.println("Anzipovanje uspelo!");
+		      
+		    } catch (Exception e) {
+		    	System.out.println("Anzipovanje nije uspelo");
+		    	e.printStackTrace();
+		    	return;
+		    }
 	}
 
 }
