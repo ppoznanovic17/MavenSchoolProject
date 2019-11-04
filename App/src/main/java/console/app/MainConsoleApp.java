@@ -125,7 +125,7 @@ public class MainConsoleApp {
 				String name;
 				name=ConsoleFunctions.question("Unesite ime fajla koji zelite da uploadujete: ");
 				String putanja;
-				putanja=ConsoleFunctions.question("Unesite putanju na kojoj zelite da fajl bude uploadovan: ");
+				putanja=ConsoleFunctions.question("Unesite putanju sa koje zelite da fajl bude uploadovan: ");
 				System.out.println(folder.upload(name, putanja, currentFolder));
 			}else
 			if(answer.equals("6") && privileges.contains("search_repository")) {

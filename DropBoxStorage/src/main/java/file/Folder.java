@@ -561,8 +561,48 @@ public class Folder extends Storage {
 
 	@Override
 	public String upload(String fileName, String upload_path, String filePath) {
-		//upload je odradjen u funkciji addFile, posto u udaljenom sklonistu upload i addFile imaju istu funkciju.
-		return null;
+		DbxClientV2 client = c.getClient();
+		File folder= new File(upload_path+"/"+fileName);
+		if(folder.isDirectory()) {
+			zip(upload_path, fileName, upload_path);
+			try (InputStream in = new FileInputStream(folder.getAbsolutePath().toString()+".zip")) {
+	    	    try {
+					FileMetadata metadata = client.files().uploadBuilder("/"+fileName+".zip")
+					    .uploadAndFinish(in);
+					
+					return "Uspeo upload";
+					//file.delete();
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return e.toString();
+				} 
+			}catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+				return e.toString();
+			}
+			
+			
+		}
+		try (InputStream in = new FileInputStream(upload_path+"/"+fileName)) {
+    	    try {
+				FileMetadata metadata = client.files().uploadBuilder("/"+fileName)
+				    .uploadAndFinish(in);
+				
+				return "Uspeo upload";
+				//file.delete();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return e.toString();
+			} 
+		}catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			return e.toString();
+		}
+		
 	}
 
 	@Override
