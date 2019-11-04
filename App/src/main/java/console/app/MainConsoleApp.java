@@ -46,7 +46,7 @@ public class MainConsoleApp {
 		root = currentFolder;
 		String currentHelp="";
 		if(root.equals(""))  currentHelp="root/";
-		System.out.println(root+"/");
+		//System.out.println(root+"/");
 		
 		System.out.println("Kako biste pristupili repozitorijumu molimo Vas da se ulogujete\n");
         
@@ -115,7 +115,7 @@ public class MainConsoleApp {
 			}else
 			if(answer.equals("4") && privileges.contains("download")) {
 				String name;
-				name=ConsoleFunctions.question("Unesite ime fajla koji zelite da preuzmete:");
+				name=ConsoleFunctions.question("Unesite ime fajl koji zelite da preuzmete:");
 				String putanja;
 				putanja=ConsoleFunctions.question("Unesite putanju na kojoj zelite da se fajl preuzme: ");
 				System.out.println(folder.download(name, putanja,currentFolder));
@@ -213,7 +213,7 @@ public class MainConsoleApp {
 			}else if(answer.equals("end")){
 				break;
 			}else if(answer.equals("cmd")){
-				user.showMenuforUser(currentFolder);
+				user.showMenuforUser(currentFolder,folder);
 				
 			}else {
 				System.out.println("Ta opcija ne postoji. Pokusajte ponovo.");

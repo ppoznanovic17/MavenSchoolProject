@@ -35,6 +35,7 @@ public class Folder extends Storage {
 
 	@Override
 	public File getJson(String path) throws IOException {
+		super.type="local";
 		File folder = new File(path);
 		BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
 		if(!(folder.exists())) {

@@ -6,6 +6,8 @@ import java.util.List;
 
 import org.json.simple.JSONObject;
 
+import file.manipulation.Storage;
+
 public class User extends user.User {
 	
 	
@@ -21,7 +23,7 @@ public class User extends user.User {
 		
 	}
 	
-	public void showMenuforUser(String path) {
+	public void showMenuforUser(String path, Storage s) {
 		int cnt;
 		BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
 		StringBuilder sb=new StringBuilder();
@@ -69,12 +71,12 @@ public class User extends user.User {
 			sb.append("\n");
 			sb.append("Izaberite "+cnt+" za dodavanje zabranjenih ekstenzija");
 		}
-		if(privileges.contains("download")) {
+		if(privileges.contains("download") && s.getType().equals("local")) {
 			cnt=9;
 			sb.append("\n");
 			sb.append("Izaberite "+cnt+" za zipovnje fajlova");
 		}
-		if(privileges.contains("upload") || privileges.contains("add_directory")) {
+		if(privileges.contains("upload") && s.getType().equals("local")) {
 			cnt=10;
 			sb.append("\n");
 			sb.append("Izaberite "+cnt+" za anzipovanje fajlova");

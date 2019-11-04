@@ -20,7 +20,7 @@ import file.manipulation.Storage;
 public class Connection {
 
 	 //private static final String ACCESS_TOKEN = "73QM8TaW9xAAAAAAAAAAGw1s2pREbigNNfkOtKVre8ZVrqN3RBQWnCegZdX5cGxJ";
-	private static final String ACCESS_TOKEN = "73QM8TaW9xAAAAAAAAAAKKjIb6zD8CnoS8Gk7pfZRv_Kry2957rzjUYi-i6Nk9jq";
+	private static final String ACCESS_TOKEN = "73QM8TaW9xAAAAAAAAAALM7btVUpGJ16bq3tldeogmcgjIS_xsHXlGS5ACc-FmUL";
 
 	 static DbxRequestConfig config;
 	 static DbxClientV2 client;
@@ -34,17 +34,7 @@ public class Connection {
 		 
 	 }
 	
-	 /*public static void main(String[] args) {
-		File file = null;
-		
-		try {
-			file=f.getJson("");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}*/
+	
 	 
 	 public static void connetction() throws UploadErrorException, DbxException, IOException {
 		  config = DbxRequestConfig.newBuilder("dropbox/java-tutorial").build();

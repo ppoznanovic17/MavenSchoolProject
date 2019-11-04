@@ -45,7 +45,7 @@ public class Folder extends Storage {
 	
 	@Override
 	public File getJson(String path) throws IOException {
-		
+		this.type="drop";
 		c= new Connection();
 		
 		try {
@@ -199,11 +199,15 @@ public class Folder extends Storage {
 	@Override
 	public String download(String fileName, String download_path, String filePath) {
 		DbxClientV2 client = c.getClient();
-		
+		System.out.println(fileName);
+		if(fileName.equals("")) {
+			fileName="pomoc";
+		}
 		try {
 			if(fileName.contains(".")) {
+				
 			OutputStream out = new FileOutputStream(download_path+"\\"+fileName);
-			FileMetadata metadata = client.files().downloadBuilder("/"+fileName).download(out);
+			FileMetadata metadata = client.files().downloadBuilder(filePath+"/"+fileName).download(out);
 			return "Uspesno preuzet fajl.";
 			}else {
 				OutputStream out = new FileOutputStream(download_path+"\\"+fileName+".zip");
@@ -249,9 +253,9 @@ public class Folder extends Storage {
 	}
 
 	@Override
-	public String addDir(String fileName, String path,String number,boolean metaBool, User u,String users) throws IOException {
+	public String addDir(String fileName, String pathCurr,String number,boolean metaBool, User u,String users) throws IOException {
 		int broj=Integer.parseInt(number);
-		path = "help";
+		String path = "help";
 		BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
 		if(broj==0) {
 			return "Upload [ERROR]";
@@ -389,7 +393,7 @@ public class Folder extends Storage {
 				
 				f.mkdir();
 				try {
-					client.files().createFolder("/"+f.getName());
+					client.files().createFolder(pathCurr+"/"+f.getName());
 					
 				} catch (DbxException e) {
 					// TODO Auto-generated catch block
@@ -606,7 +610,7 @@ public class Folder extends Storage {
 	}
 
 	@Override
-	public void ls(String Path) {
+	public void ls(String path) {
 		DbxClientV2 client = c.getClient();
 		ListFolderResult result = null;
 		try {
@@ -619,27 +623,91 @@ public class Folder extends Storage {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		int cnt=1;
 		while (true) {
 		    for (Metadata metadata : result.getEntries()) {
 		    	
-		        System.out.println(metadata.getPathLower());
-		    }
-
+		    	if(cnt==1) {
+					int size= metadata.getName().length();
+					String pom= "";
+					for(int i=20-size; i>0;i--) {
+						pom+=" ";
+					}
+					System.out.print(metadata.getName()+pom+"|"+"         ");
+					
+				}
+				if(cnt==2) {
+					System.out.println(metadata.getName());
+					cnt=0;
+				}
+				cnt++;	
+		
+			}
+		    	
 		    if (!result.getHasMore()) {
 		        break;
 		    }
-		}
+		       
+		    }
+		
 	}
 
 	@Override
 	public String cd(String[] command, String path, String root) {
-		// TODO Auto-generated method stub
-		return null;
+		String pom=command[1];
+		for(int i=2; i< command.length;i++) {
+			pom=pom+ " "+command[i];
+		}
+		//System.out.println("root:" +root);
+		//System.out.println("curr:" + path);
+		//System.out.println(pom);
+		if(pom.equals("..") ) {
+			
+			//System.out.println("help: " +help);
+			if(root.equals("")) {
+				System.out.println("Vec se nalazite u root-u repozitorijumu");
+				return root;
+			}else {
+				String help=path.substring(0,path.lastIndexOf(File.separator));
+				System.out.println("Trenutna lokacija: " + help);
+				return help;
+				
+			}
+		}else {
+			ListFolderResult result = null;
+			DbxClientV2 client = c.getClient();
+			try {
+				result = client.files().listFolder(path);
+				for (Metadata metadata : result.getEntries()) {
+			    	if(metadata.getPathLower().contains(pom)) {
+			    		System.out.println("Fajl nadjen -->" +metadata.getPathLower());
+			    		return metadata.getPathLower();
+			    	}
+			    }
+			} catch (DbxException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+		}
+		System.out.println("Nevalidan unos. Lokacija je ostala nepromenjena!");
+		System.out.println("Trenutna lokacija: " +path);
+		return path;
 	}
-
+	
 	@Override
 	public void searchByName1(List<File> files, String dir, String name) {
-		ListFolderResult result = null;
+		if(dir.equals("")) dir= "/petar3";
+		
+		String name1= dir.substring(dir.lastIndexOf("/")+1);
+		if(name1.length()<2) name1="/";
+		/*System.out.println(name1+"  name1");
+		System.out.println(dir+ "dir ");
+		System.out.println(f.getAbsolutePath().toString()+"    dirpath");*/
+		download(name1,dir, "/help");
+		System.out.println(dir);
+		/*ListFolderResult result = null;
 		DbxClientV2 client = c.getClient();
 		try {
 			result = client.files().listFolder("");
@@ -654,7 +722,7 @@ public class Folder extends Storage {
 			e.printStackTrace();
 		}
 		System.out.println("Fajl ne postoji u repozitorijumu.");
-		return;
+		return;*/
 	}
 
 	@Override

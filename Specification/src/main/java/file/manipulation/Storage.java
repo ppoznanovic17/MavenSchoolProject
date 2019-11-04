@@ -8,7 +8,7 @@ public abstract class Storage implements FileOperations,FileSearch {
 	
 	public String path;
 	public List<String> forbiddenExtensions;
-	
+	public String type;
 	
 	public Storage() {
 		// TODO Auto-generated constructor stub
@@ -35,5 +35,7 @@ public abstract class Storage implements FileOperations,FileSearch {
 		this.path = path;
 	}
 	
-	
+	public String getType() {
+		return type;
+	}
 }
