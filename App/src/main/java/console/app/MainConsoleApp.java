@@ -44,6 +44,8 @@ public class MainConsoleApp {
 		/*root=absolutePath.
 	    substring(0,absolutePath.lastIndexOf(File.separator));*/
 		root = currentFolder;
+		String currentHelp="";
+		if(root.equals(""))  currentHelp="root/";
 		System.out.println(root+"/");
 		
 		System.out.println("Kako biste pristupili repozitorijumu molimo Vas da se ulogujete\n");
@@ -65,13 +67,13 @@ public class MainConsoleApp {
 			System.out.println(  "Ukucajte 'cmd' za prikaz komandi" );
 			System.out.println("");
 			
-			System.out.println(currentFolder + " >" );
+			System.out.println(currentHelp+currentFolder + " >" );
 			answer=reader.readLine();
 			List<String> privileges= user.getPrivileges();
 			
 			if(answer.equals("1") && privileges.contains("add_user")) {
 				try {
-					ConsoleFunctions.singUpAnotherUser(file);
+					folder.singUpAnotherUser(file);
 				} catch (Exception e) {
 					
 					e.printStackTrace();

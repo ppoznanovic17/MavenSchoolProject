@@ -1,1 +1,1 @@
-{"ext":[],"meta":[],"users":[{"privileges":["add_user","add_directory","add_file","download","upload","search_repository","delete_file","add_forbidden_extension"],"password":"co","username":"co"}]}
+{"ext":[],"meta":[],"users":[{"privileges":["add_user","add_directory","add_file","download","upload","search_repository","delete_file","add_forbidden_extension"],"password":"a","username":"a"},{"privileges":[],"password":"b","username":"b"},{"privileges":[],"password":"petar","username":"petar"}]}

@@ -111,73 +111,7 @@ public class ConsoleFunctions {
 		
 	}
 	
-	public static void singUpAnotherUser(File f) throws Exception {
-		BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
-		JSONObject user=new JSONObject();
-		System.out.println("Unesite podatke za novog korisnika.");
-		System.out.println("Username: ");
-		try {
-			String username=reader.readLine();
-			System.out.println("Password: ");
-			String password=reader.readLine();
-			
-			user.put("username", username);
-			user.put("password", password);
-			
-			JSONArray privileges=new JSONArray();
-			System.out.println("Unesite privilegije koje ce korisnik imati: ");
-			System.out.println("");
-			System.out.println("(Privilegije: add_user, add_directory, upload_file, download_file, search_repository, delete_file)");
-			System.out.println("");
-			System.out.println("Ako zelite da zavrsite sa dodavanjem korisnika napisite 'submit'. ");
-			String privilegija = "";
-			while(!(privilegija.equals("submit"))) {
-				privilegija=reader.readLine();
-				if(!(privilegija.equals("add_user") || privilegija.equals("add_directory") || privilegija.equals("add_file") || privilegija.equals("upload")
-						  || privilegija.equals("delete_file") || privilegija.equals("search_repository") || privilegija.equals("download") || privilegija.equals("submit"))) {
-							System.out.println("Niste uneli tacno ime privilegije. Pokusajte ponovo");
-						}
-						else if(privileges.contains(privilegija)) {
-							System.out.println("Vec ste uneli tu privilegiju.");
-						}else if(privilegija.equals("submit")){
-							
-							break;
-						}else {
-							privileges.add(privilegija);
-							System.out.println("Privilegija dodata.");
-							System.out.println("(Privilegije: add_user, add_directory, add_file, download, upload, search_repository, delete_file)");
-							System.out.println("");
-							System.out.println("Ako zelite da zavrsite sa dodavanjem korisnika napisite 'submit'. ");
-						}
-						
-			}
-			
-			user.put("privileges", privileges);
-			
-			//ConsoleApp.getUsers().add(main);
-			//File folder=new File(ConsoleApp.getFolder().getAbsolutePath()+'\\'+"users.json");
-			String path=f.getAbsolutePath().toString();
-			JSONObject obj= (JSONObject) readJsonSimpleDemo(f.getAbsolutePath().toString());
-			JSONArray users= (JSONArray) obj.get("users");
-		
-			users.add(user);
-			
-			
-			BufferedWriter writer=null;
-			
-			writer= new BufferedWriter(new FileWriter(f.getAbsolutePath().toString()));
-			writer.write(obj.toString());
-			System.out.println(path);
-			writer.close();
-			//showMenuforUser((JSONObject) ConsoleApp.getUsers().get(0));
-			
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 	
-	}
 	
 	public JSONArray getUsersFromJson(String path) {
 		return null;

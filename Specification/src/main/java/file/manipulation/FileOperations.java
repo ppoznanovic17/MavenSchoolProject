@@ -28,6 +28,8 @@ public interface FileOperations {
 	String addFile(String fileName, String path, String f, boolean metaBool, User u) throws Exception;
 
 	String upload(String fileName, String upload_path, String filePath);
+
+	void singUpAnotherUser(File f);
 	
 	
 }
