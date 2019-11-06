@@ -16,10 +16,19 @@ import com.dropbox.core.v2.users.FullAccount;
 
 import file.Folder;
 import file.manipulation.Storage;
-
+/**
+ * Klasa Connection predstavlja implementaciju konekcije na udaljeno skladiste uz pomoc jedinstvenog ACCESS TOKENA,
+ * koji je vezan za odredjeni account na Dropbox-u.
+ * @author Bogi
+ *
+ */
 public class Connection {
 
 	//private static final String ACCESS_TOKEN = "73QM8TaW9xAAAAAAAAAALM7btVUpGJ16bq3tldeogmcgjIS_xsHXlGS5ACc-FmUL";
+	/**
+	 * Prilikom konekcije na dropbox, svaki korisnik je duzan da generise svoj ACCESS TOKEN koji moze pronaci u svojoj aplikaciji 
+	 * dropbox accountu i da kopira taj token i prosledi ga u ovo polje pre pokretanja aplikacije.
+	 */
 	 private static final String ACCESS_TOKEN = "3Pl0YbNvFhAAAAAAAAAAGGf2O5hzjUTYTHVO9SC265yR7MyE1oDyIOIHXVelpmET";
 
 	 static DbxRequestConfig config;
@@ -35,7 +44,12 @@ public class Connection {
 	 }
 	
 	
-	 
+	 /**
+	  * Metoda za konekciju na dropbox preko dropbox API-ja
+	  * @throws UploadErrorException
+	  * @throws DbxException
+	  * @throws IOException
+	  */
 	 public static void connetction() throws UploadErrorException, DbxException, IOException {
 		  config = DbxRequestConfig.newBuilder("dropbox/java-tutorial").build();
 	        client = new DbxClientV2(config, ACCESS_TOKEN);

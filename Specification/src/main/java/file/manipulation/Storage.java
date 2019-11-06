@@ -3,7 +3,15 @@ package file.manipulation;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-
+/**
+ * Abs klasa koja predstavlja specifikaciju za upravljanje folderima i fajlovima u skladistu.
+ * Ova klasa implementira oba interfejsa koji sadrze metode za upravljanje fajlovima (FileOperations i FileSearch)
+ * i nju nasledjuju klase koje prestavljaju implementaciju upravljanja fajlovima/folderima za odredjeno skladiste.
+ * (implementacija za oba skladista nasledjuje ovu klasu).
+ * @author Petar Poznanovic
+ * @author Bogdan Stojadinovic
+ *
+ */
 public abstract class Storage implements FileOperations,FileSearch {
 	
 	public String path;

@@ -23,7 +23,13 @@ import org.json.simple.parser.JSONParser;
 
 import file.manipulation.Storage;
 import user.User;
-
+/**
+ * Klasa koja predstavlja implementaciju upravljanja folderima/fajlovima za LOKALNO SKLADISTE.
+ * Ova klasa nasledjuje Abs klasu Storage iz specifikacije koja definise sve metode za upravljanje fajlovima.
+ * @author Bogdan Stojadinovic
+ * @author Petar Poznanovic
+ *
+ */
 public class Folder extends Storage {
 	
 	

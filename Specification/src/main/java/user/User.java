@@ -2,7 +2,13 @@ package user;
 
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Abs klasa koja definise specifikaciju za jedinstvenog korisnika konzolne aplikacije. Ovu klasu nasledjuje klasa User u konzolnoj aplikaciji.
+ * 
+ * @author Petar Poznanovic
+ * @author Bogdan Stojadinovic
+ *
+ */
 public abstract class User {
 
 	public String username;
