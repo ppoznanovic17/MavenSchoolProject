@@ -26,7 +26,13 @@ import org.json.simple.parser.JSONParser;
 
 import net.lingala.zip4j.ZipFile;
 import users.User;
-
+/**
+ * Klasa ConsoleFunctions predstavlja klasu koja sluzi kao pomocna klasa konzolnoj aplikaciji. U ovoj klasi se nalaze metode za
+ * koje konzolna aplikacija treba da izvrsi nakon sto se aplikacija pokrene.
+ * 
+ * @author Bogdan Stojadinovic
+ * @author Petar Poznanovic
+ */
 public class ConsoleFunctions {
 	//Arrays.asList("add_user","add_directory","upload_file","download_file","search_repository","delete_file");
 	public static BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
@@ -34,7 +40,14 @@ public class ConsoleFunctions {
 	public static void write(String message) {
 		System.out.println(message);
 	}
-	
+	/**
+	 * Metoda za interakciju sa korisnikom preko konzole. Metoda question prima string koji aplikacija salje korisniku, a vraca 
+	 * odgovor koji je korisnik napisao u konzolu.
+	 * @param message
+	 *  Obican string koji ova metoda prima iz glavne konzolne aplikacije u Main metodi.
+	 * @return
+	 * Ova metoda vraca string koji predstavlja odgovor koji je korisnik dao na pitanje iz parametra message.
+	 */
 	public static String question(String message) {
 		System.out.println(message);
 		String answer="";
@@ -48,7 +61,14 @@ public class ConsoleFunctions {
 		return answer;
 		
 	}
-	
+	/**
+	 * Metoda login sluzi za autentifikaciju korisnika iz users.json fajla
+	 * @param f
+	 * @param username
+	 * @param password
+	 * @return
+	 * @throws Exception
+	 */
 	public static User logIn(File f,String username, String password) throws Exception {
 		JSONObject obj= (JSONObject) readJsonSimpleDemo(f.getAbsolutePath().toString());
 		JSONArray users= (JSONArray) obj.get("users");
@@ -117,7 +137,12 @@ public class ConsoleFunctions {
 		return null;
 		
 	}
-	
+	/**
+	 * Metoda za citanje json fajla
+	 * @param filename
+	 * @return
+	 * @throws Exception
+	 */
 	public static Object readJsonSimpleDemo(String filename) throws Exception {
 	    FileReader reader = new FileReader(filename);
 	    JSONParser jsonParser = new JSONParser();
@@ -125,7 +150,12 @@ public class ConsoleFunctions {
 	}
 	
 	
-	
+	/**
+	 * Metoda za zipovanje fajlova
+	 * @param file
+	 * @param name
+	 * @param dest
+	 */
 	public static void zip(String file, String name, String dest) {
 		ZipFile zip= new ZipFile(dest+"\\"+name+".zip");	
 		File folder= new File(file+"\\"+name);
@@ -156,7 +186,11 @@ public class ConsoleFunctions {
 			}
 		}
 	}
-	
+	/**
+	 * Metoda za unzipovanje fajlova
+	 * @param source
+	 * @param destination
+	 */
 	public static void unzipAndAdd(String source, String destination) {
 		//System.out.println(new File(source));
 	    try {

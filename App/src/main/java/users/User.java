@@ -7,7 +7,14 @@ import java.util.List;
 import org.json.simple.JSONObject;
 
 import file.manipulation.Storage;
-
+/**
+ * Klasa User definise jednog korisnika prema njegovim parametrima koje nasledjuje iz specifikacije. U ovoj klasi se nalazi metoda 
+ * showMenuforUser kao i geteri i seteri za polja koja definisu usera
+ * 
+ * @author Bogdan Stojadinovic
+ * @author Petar Poznanovic
+ *
+ */
 public class User extends user.User {
 	
 	
@@ -22,7 +29,11 @@ public class User extends user.User {
 	public User() {
 		
 	}
-	
+	/**
+	 * Metoda koja prikazuje meni na konzolnoj aplikaciji za jedinstvenog korisnika u zavisnosti od privilegija koje poseduje
+	 * @param path
+	 * @param s
+	 */
 	public void showMenuforUser(String path, Storage s) {
 		int cnt;
 		BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));

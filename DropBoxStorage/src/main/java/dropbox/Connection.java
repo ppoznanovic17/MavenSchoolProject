@@ -19,8 +19,8 @@ import file.manipulation.Storage;
 
 public class Connection {
 
-	 //private static final String ACCESS_TOKEN = "73QM8TaW9xAAAAAAAAAAGw1s2pREbigNNfkOtKVre8ZVrqN3RBQWnCegZdX5cGxJ";
-	private static final String ACCESS_TOKEN = "73QM8TaW9xAAAAAAAAAALM7btVUpGJ16bq3tldeogmcgjIS_xsHXlGS5ACc-FmUL";
+	//private static final String ACCESS_TOKEN = "73QM8TaW9xAAAAAAAAAALM7btVUpGJ16bq3tldeogmcgjIS_xsHXlGS5ACc-FmUL";
+	 private static final String ACCESS_TOKEN = "3Pl0YbNvFhAAAAAAAAAAGGf2O5hzjUTYTHVO9SC265yR7MyE1oDyIOIHXVelpmET";
 
 	 static DbxRequestConfig config;
 	 static DbxClientV2 client;

@@ -186,7 +186,7 @@ public class Folder extends Storage {
 	public String delete(String fileName, String path) throws IOException {
 		DbxClientV2 client = c.getClient();
 		try {
-			client.files().delete("/"+fileName);
+			client.files().delete(path + "/"+fileName);
 			return "Uspesno obrisan fajl.";
 		} catch (DbxException e) {
 			// TODO Auto-generated catch block
@@ -429,8 +429,8 @@ public class Folder extends Storage {
 	@Override
 	public String addFile(String fileName, String path, String f, boolean metaBool, User u) throws Exception {
 		List<String> ext= new ArrayList<String>();
-		path = "help";
-		File file= new File(path+"\\"+fileName);
+		String hlpPath = "help";
+		File file= new File(hlpPath+"\\"+fileName);
 		//System.out.println("----->"+f);
 		//System.out.println(file.getAbsolutePath().toString());
 		JSONObject obj= (JSONObject) readJsonSimpleDemo(f);
@@ -544,7 +544,7 @@ public class Folder extends Storage {
 			
 			try (InputStream in = new FileInputStream(file)) {
 	    	    try {
-					FileMetadata metadata = client.files().uploadBuilder("/"+fileName)
+					FileMetadata metadata = client.files().uploadBuilder(path+"/"+fileName)
 					    .uploadAndFinish(in);
 					file.delete();
 				} catch (UploadErrorException e) {
@@ -698,31 +698,23 @@ public class Folder extends Storage {
 	
 	@Override
 	public void searchByName1(List<File> files, String dir, String name) {
-		if(dir.equals("")) dir= "/petar3";
-		
-		String name1= dir.substring(dir.lastIndexOf("/")+1);
-		if(name1.length()<2) name1="/";
-		/*System.out.println(name1+"  name1");
-		System.out.println(dir+ "dir ");
-		System.out.println(f.getAbsolutePath().toString()+"    dirpath");*/
-		download(name1,dir, "/help");
-		System.out.println(dir);
-		/*ListFolderResult result = null;
 		DbxClientV2 client = c.getClient();
+		ListFolderResult result;
 		try {
-			result = client.files().listFolder("");
-			for (Metadata metadata : result.getEntries()) {
-		    	if(metadata.getPathLower().contains(name)) {
-		    		System.out.println("Fajl nadjen -->" +metadata.getPathLower());
-		    		return;
-		    	}
+			result = client.files().listFolder(dir);
+			File file = new File(dir);
+			returnAllFiles(files, result,file, client);
+			for(File f : files) {
+				if(f.getName().contains(name))
+		    	System.out.println(f.getName()+" -------------> " + f.getAbsolutePath().toString());
 		    }
 		} catch (DbxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("Fajl ne postoji u repozitorijumu.");
-		return;*/
+		
+		
+		
 	}
 
 	@Override
@@ -746,7 +738,7 @@ public class Folder extends Storage {
 		ListFolderResult result = null;
 		DbxClientV2 client = c.getClient();
 		try {
-			result = client.files().listFolder("");
+			result = client.files().listFolder(path);
 			for (Metadata metadata : result.getEntries()) {
 		    	if(metadata.getPathLower().endsWith("."+extension)) {
 		    		return "Fajl nadjen -->" + metadata.getPathLower();
@@ -914,5 +906,14 @@ public class Folder extends Storage {
 		    	return;
 		    }
 	}
+	private static List<File> returnAllFiles(List<File> files, ListFolderResult result, File dir,DbxClientV2 client) throws ListFolderErrorException, DbxException {
+		
+				
 
+
+		    
+		
+		return files;
+	   
+	}
 }

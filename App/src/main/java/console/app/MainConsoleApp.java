@@ -13,6 +13,19 @@ import file.Folder;
 import file.manipulation.Storage;
 import sun.security.util.Resources;
 import users.User;
+
+
+/**
+ * Klasa MainConsoleApp predstavlja konzolnu aplikaciju koja sluzi kao tester za primenu implementacije lokalnog ili udaljenog skladista
+ * u zavisnosti od odabira skladista. Ova klasa u konzoli simulira command prompt i vrsi interakciju sa korisnikom preko komandi koje
+ * korisnik zadaje preko konzole.
+ * 
+ * @author Bogdan Stojadinovic 
+ * @author Petar Poznanovic
+ * 
+ * 
+ */
+
 public class MainConsoleApp {
 	/*
 	 * @Petar & @Bogdan
@@ -26,6 +39,11 @@ public class MainConsoleApp {
 	public static final String BLUE_BOLD = "\033[1;34m";
 	public static final String ANSI_RESET = "\033[0m";
 	public static final String GREEN_BOLD = "\033[1;32m";
+	/**
+	 * U zavisnosti od odabira vrste skladista, korisnik menja samo instancu klase Storage preko polja "folder" koje moze biti instanca
+	 * new Folder() -> za lokalno skladiste, i new Folder() -> za udaljeno skladiste, u zavisnosti od trenutno ubacenog dependency-ja u pom.xml
+	 * fajlu ovog projekta.
+	 */
 	static Storage folder= new Folder();
 	static User user= new User();
 	static String currentFolder= "";
@@ -36,7 +54,7 @@ public class MainConsoleApp {
 		BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
 		ConsoleFunctions.write("Dobrodosli");
 		//ucitavanje json fajla (univerzalno)
-		 currentFolder=ConsoleFunctions.question("Unesite putanju do repozitorijuma:");
+		 currentFolder=ConsoleFunctions.question("Unesite putanju do repozitorijuma: (ako koristite udaljeno skladiste samo pritisnite enter)");
 		 folder.setPath(currentFolder);
 		File file= folder.getJson(currentFolder);
 		jsonUsers= file.getAbsolutePath().toString();
