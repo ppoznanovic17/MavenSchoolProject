@@ -31,6 +31,8 @@ import com.dropbox.core.v2.files.ListFolderContinueErrorException;
 import com.dropbox.core.v2.files.ListFolderErrorException;
 import com.dropbox.core.v2.files.ListFolderResult;
 import com.dropbox.core.v2.files.Metadata;
+import com.dropbox.core.v2.files.SearchMatch;
+import com.dropbox.core.v2.files.SearchResult;
 import com.dropbox.core.v2.files.UploadErrorException;
 
 import dropbox.Connection;
@@ -704,39 +706,45 @@ public class Folder extends Storage {
 	
 	@Override
 	public void searchByName1(List<File> files, String dir, String name) {
+		
+		int cnt = 0;
 		DbxClientV2 client = c.getClient();
-		ListFolderResult result;
+		SearchResult result = null;
 		try {
-			result = client.files().listFolder(dir);
-			File file = new File(dir);
-			returnAllFiles(files, result,file, client);
-			for(File f : files) {
-				if(f.getName().contains(name))
-		    	System.out.println(f.getName()+" -------------> " + f.getAbsolutePath().toString());
-		    }
+			result = client.files().search(dir, name);
 		} catch (DbxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		
-		
+		for(SearchMatch match: result.getMatches()) {
+			System.out.println("Fajl pronadjen -------->" + match.getMetadata().getName());
+			cnt++;
+		}
+		if(cnt==0) {
+			System.out.println("Fajl sa takvim imenom ne postoji u skladistu.");
+		}
 	}
 
 	@Override
 	public void searchByName2(List<File> files, String dir, String name) {
-		DbxClientV2 client  = c.getClient();
+		int cnt = 0;
+		DbxClientV2 client = c.getClient();
+		SearchResult result = null;
 		try {
-			client.files().getMetadata("/"+name);
-			System.out.println("Fajl postoji.");
-			return;
+			result = client.files().search(dir, name);
 		} catch (DbxException e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			System.out.println("Fajl ne postoji.");
-			return;
+			e.printStackTrace();
 		}
 		
+		for(SearchMatch match: result.getMatches()) {
+			System.out.println("Fajl pronadjen -------->" + match.getMetadata().getName());
+			cnt++;
+		}
+		if(cnt==0) {
+			System.out.println("Fajl sa takvim imenom ne postoji u skladistu.");
+		}
 	}
 
 	@Override
@@ -760,7 +768,27 @@ public class Folder extends Storage {
 
 	@Override
 	public void searchByExtension2(List<File> files, String dir, String name) {
-		// TODO Auto-generated method stub
+		int cnt = 0;
+		DbxClientV2 client = c.getClient();
+		SearchResult result = null;
+		try {
+			result = client.files().search(dir, name);
+		} catch (DbxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		for(SearchMatch match: result.getMatches()) {
+			String ime = match.getMetadata().getName().toString();
+			if(ime.endsWith("."+name)) {
+				System.out.println("Fajl pronadjen -------->" + match.getMetadata().getName());
+				cnt++;
+			}
+			
+		}
+		if(cnt==0) {
+			System.out.println("Fajl sa takvom ekstenzijom ne postoji u skladistu.");
+		}
 		
 	}
 
@@ -912,14 +940,5 @@ public class Folder extends Storage {
 		    	return;
 		    }
 	}
-	private static List<File> returnAllFiles(List<File> files, ListFolderResult result, File dir,DbxClientV2 client) throws ListFolderErrorException, DbxException {
-		
-				
-
-
-		    
-		
-		return files;
-	   
-	}
+	
 }

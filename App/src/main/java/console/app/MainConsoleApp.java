@@ -170,7 +170,7 @@ public class MainConsoleApp {
 				else if(opcija.equals("4")) {
 					String name=ConsoleFunctions.question("Unesite ime ekstenzije za pretragu (ukoliko zelite da izaberete foldere tj. direktorijume ukucajte 'dir'):");
 					List<File> list= new ArrayList<File>();
-					folder.searchByName2(list, currentFolder, name);
+					folder.searchByExtension2(list, currentFolder, name);
 				}else {
 					System.out.println("Opcija ne postoji.");
 				}

@@ -29,7 +29,7 @@ public class Connection {
 	 * Prilikom konekcije na dropbox, svaki korisnik je duzan da generise svoj ACCESS TOKEN koji moze pronaci u svojoj aplikaciji 
 	 * dropbox accountu i da kopira taj token i prosledi ga u ovo polje pre pokretanja aplikacije.
 	 */
-	 private static final String ACCESS_TOKEN = "3Pl0YbNvFhAAAAAAAAAAGGf2O5hzjUTYTHVO9SC265yR7MyE1oDyIOIHXVelpmET";
+	 private static final String ACCESS_TOKEN = "3Pl0YbNvFhAAAAAAAAAAGWYFEaoWoWKql4gjNEsueyY0w1IrmvQwD1V3L6gnBzre";
 
 	 static DbxRequestConfig config;
 	 static DbxClientV2 client;
