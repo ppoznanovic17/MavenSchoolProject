@@ -112,7 +112,7 @@ public class ConsoleFunctions {
 			    	 }
 			    	 User u= new User(username, password);
 				 		u.setPrivileges(privileges);
-				 		System.out.println(u.getUsername() + "      " + privileges);
+				 		System.out.println("Uspesno ste se prijavili!");
 				 		return u;
 			    	}
 			    	

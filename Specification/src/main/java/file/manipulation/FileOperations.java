@@ -40,7 +40,7 @@ public interface FileOperations {
  * @param path putanja gde ce se cuvati da je ekstenzija zabranjena (isti json fajl koji cuva i korisnike)
  * @throws Exception
  */
-	void addForbiddenExtensions(String e, String path) throws Exception;
+	void addForbiddenExtensions(String e, File f) throws Exception;
 
 	/**
 	 * Metoda koja prikazuje meta podatke za trenutne fajlove u skladistu
@@ -61,7 +61,7 @@ public interface FileOperations {
  * @return Metoda vraca poruku o uspesnosti kreiranja novog direktorijuma
  * @throws IOException
  */
-	String addDir(String fileName, String path, String number, boolean meta, User u, String users) throws IOException;
+	String addDir(String fileName, String path, String number, boolean meta, User u, File f) throws IOException;
 
 	
 /**
@@ -74,7 +74,7 @@ public interface FileOperations {
  * @return Metoda vraca poruku o uspesnosti kreiranja novog fajla
  * @throws Exception
  */
-	String addFile(String fileName, String path, String f, boolean metaBool, User u) throws Exception;
+	String addFile(String fileName, String path, File f, boolean metaBool, User u) throws Exception;
 	
 	
 /**

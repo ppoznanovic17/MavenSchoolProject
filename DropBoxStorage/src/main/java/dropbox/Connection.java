@@ -29,7 +29,7 @@ public class Connection {
 	 * Prilikom konekcije na dropbox, svaki korisnik je duzan da generise svoj ACCESS TOKEN koji moze pronaci u svojoj aplikaciji 
 	 * dropbox accountu i da kopira taj token i prosledi ga u ovo polje pre pokretanja aplikacije.
 	 */
-	 private static final String ACCESS_TOKEN = "3Pl0YbNvFhAAAAAAAAAAGWYFEaoWoWKql4gjNEsueyY0w1IrmvQwD1V3L6gnBzre";
+	 private static final String ACCESS_TOKEN = "73QM8TaW9xAAAAAAAAAAL-BvvpdbufPC9AtEnOUQJVQheLDjl9z4i0VCQecn-Bp2";
 
 	 static DbxRequestConfig config;
 	 static DbxClientV2 client;
@@ -60,9 +60,11 @@ public class Connection {
 			} catch (DbxApiException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				return;
 			} catch (DbxException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				return;
 			}
 	        //System.out.println(account.getName().getDisplayName());
 	        

@@ -46,4 +46,7 @@ public abstract class Storage implements FileOperations,FileSearch {
 	public String getType() {
 		return type;
 	}
+	
+	abstract public void welcome();
+	
 }

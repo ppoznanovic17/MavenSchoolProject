@@ -22,6 +22,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import file.manipulation.Storage;
+import net.lingala.zip4j.ZipFile;
 import user.User;
 /**
  * Klasa koja predstavlja implementaciju upravljanja folderima/fajlovima za LOKALNO SKLADISTE.
@@ -37,6 +38,11 @@ public class Folder extends Storage {
 	public Folder() {
 		super();
 		// TODO Auto-generated constructor stub
+	}
+	
+	@Override
+	public void welcome() {
+		System.out.println("DOBRODOSLI!");
 	}
 
 	@Override
@@ -55,9 +61,10 @@ public class Folder extends Storage {
 					e.printStackTrace();
 				}
 				folder=new File(path);
+				
 			}
 		}
-		
+		path= folder.getAbsolutePath();
 		File[] listofFiles=folder.listFiles();
 		for (File file : listofFiles) {
 		    if (file.getName().equals("users.json")) {
@@ -116,7 +123,7 @@ public class Folder extends Storage {
 		
 		writer= new BufferedWriter(new FileWriter(folder.getAbsolutePath().toString()));
 		writer.write(storage.toString());
-		System.out.println(storage);
+		//System.out.println(storage);
 		writer.close();
 		return folder;
 		
@@ -130,7 +137,7 @@ public class Folder extends Storage {
 	}
 
 	@Override
-	public String addDir(String fileName, String path,String number,boolean metaBool, User u,String users) throws IOException {
+	public String addDir(String fileName, String path,String number,boolean metaBool, User u,File users) throws IOException {
 		int broj=Integer.parseInt(number);
 		BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
 		
@@ -141,12 +148,12 @@ public class Folder extends Storage {
 		JSONObject obj = null;
 		JSONArray metas = null;
 		try {
-			obj = (JSONObject) readJsonSimpleDemo(users);
+			obj = (JSONObject) readJsonSimpleDemo(users.getAbsolutePath().toString());
 			metas= (JSONArray) obj.get("meta");
 			//System.out.println(metas);
 		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			return "Ucitavanje konfiguracije iz JSON fajla nije uspelo";
+			
 		}
 		
 		if(!(fileName.contains("."))) {
@@ -163,8 +170,7 @@ public class Folder extends Storage {
 						meta.put("name", atr);
 						atr= "User who made it: "+u.getUsername();
 						meta.put("creator", atr);
-						 atr= "Folder roditelj: "+f.getParentFile();
-						 meta.put("parent", atr);
+						 
 						 SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 						 Date date = new Date(System.currentTimeMillis());
 						 atr= formatter.format(date);
@@ -174,8 +180,8 @@ public class Folder extends Storage {
 						 meta.put("path", atr);
 						 //metas.add(meta);
 						 String podatak="";
-						 System.out.println("Unesite naziv i sadrzaj metapodatka: ");
-						 System.out.println("\n");
+						 System.out.println("Unesite naziv i sadrzaj custom metapodatka: ");
+						 System.out.println("Ukoliko zelite da zavrsite sa dodavanjem custom podataka unesite u konzolu naredbu submit");
 						 while(!(podatak.equals("submit"))) {
 							 if(podatak.equals("submit")) {
 								 
@@ -262,8 +268,7 @@ public class Folder extends Storage {
 				//System.out.println(obj.toString());
 				writer.close();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				return "Pri upisivanju u fajl doslo je do greske";
 			}
 			
 			
@@ -276,12 +281,12 @@ public class Folder extends Storage {
 	}
 
 	@Override
-	public String addFile(String fileName, String path,String f,boolean metaBool, User u) throws Exception {
+	public String addFile(String fileName, String path,File f,boolean metaBool, User u) throws Exception {
 		List<String> ext= new ArrayList<String>();
 		File file= new File(path+"\\"+fileName);
 		//System.out.println("----->"+f);
 		//System.out.println(file.getAbsolutePath().toString());
-		JSONObject obj= (JSONObject) readJsonSimpleDemo(f);
+		JSONObject obj= (JSONObject) readJsonSimpleDemo(f.getAbsolutePath().toString());
 		Object arr= obj.get("ext");
 		BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
 		if(arr instanceof JSONArray) {
@@ -303,8 +308,6 @@ public class Folder extends Storage {
 					meta.put("name", atr);
 					atr= "User who made it: "+u.getUsername();
 					meta.put("creator", atr);
-					 atr= "Folder roditelj: "+file.getParentFile();
-					 meta.put("parent", atr);
 					 SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 					 Date date = new Date(System.currentTimeMillis());
 					 atr= formatter.format(date);
@@ -338,8 +341,7 @@ public class Folder extends Storage {
 							writer.write(obj.toString());
 							writer.close();
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							return "Pri upisivanju u fajl doslo je do greske.";
 						}
 				
 			}
@@ -381,8 +383,7 @@ public class Folder extends Storage {
 							writer.write(obj.toString());
 							writer.close();
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
+							return "Pri upisivanju u fajl doslo je do greske.";
 						}
 				
 			}
@@ -399,20 +400,17 @@ public class Folder extends Storage {
 	public void printMeta(String json) throws Exception {
 		JSONObject obj= (JSONObject) readJsonSimpleDemo(json);
 		JSONArray metas=(JSONArray) obj.get("meta");
-		JSONArray pom= new JSONArray();
+		//JSONArray pom= new JSONArray();
 		//System.out.println(metas);
 		StringBuilder sb= new StringBuilder();
 		for(int i=0 ; i<metas.size(); i++){
 			if(metas.get(i) instanceof JSONObject) {
 				String path= (String) ((JSONObject) metas.get(i)).get("path");
 				if((new File(path).exists())) {
-					//int index = metas.indexOf(metas.get(i));
-					//System.out.println(index);
-					pom.add(metas.get(i));
-					//System.out.println(i);
+				
+					
 					sb.append(((JSONObject) metas.get(i)).get("name")+"   | ");
 					sb.append(((JSONObject) metas.get(i)).get("creator")+"   | ");
-					sb.append(((JSONObject) metas.get(i)).get("parent")+"   | ");
 					sb.append(((JSONObject) metas.get(i)).get("date")+"   | ");
 					
 					sb.append("\n");
@@ -426,16 +424,8 @@ public class Folder extends Storage {
 				
 			}
 		}
-		obj.put("meta", pom);
-		BufferedWriter writer;
-		try {
-			writer = new BufferedWriter(new FileWriter(json));
-			writer.write(obj.toString());
-			writer.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		
+		
 		System.out.print(sb.toString());
 	}
 	
@@ -497,8 +487,7 @@ public class Folder extends Storage {
 					try {
 						FileUtils.copyDirectory(f, destinacija);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						return "Doslo je do greske pri kopiranju fajlu";
 					}
 					//File novi= new File(path+"\\"+fileName);
 					//novi.mkdir();
@@ -509,8 +498,7 @@ public class Folder extends Storage {
 						FileUtils.copyFileToDirectory(f, destinacija);
 						return "Uspesno preuzet fajl.";
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						return "Neuspesno preuzet fajl";
 					}
 				}
 			}
@@ -607,21 +595,6 @@ public class Folder extends Storage {
 	}
 	
 	private static List<File> returnAllFiles(List<File> files, File dir) {
-		/*if (files == null)
-	        files = new LinkedList<File>();
-		
-		
-		
-	    if (!dir.isDirectory())
-	    {
-	        files.add(dir);
-	        return files;
-	    }
-	    
-	    for (File file : dir.listFiles())
-	        returnAllFiles(files, file);
-	    return files;*/
-	    
 		
 		    if(dir.isFile()){
 		        files.add(dir);
@@ -637,7 +610,7 @@ public class Folder extends Storage {
 	   
 	}
 
-	public static  void test(List<File> files , String dir) {
+	/*public static  void test(List<File> files , String dir) {
 		 
 		returnAllFiles(files, new File(dir));
 		
@@ -645,11 +618,11 @@ public class Folder extends Storage {
 				
 		    	System.out.println(f.getName()+" -------------> " + f.getAbsolutePath().toString());
 		    }
-	}
+	}*/
 	
 	@Override
-	public void addForbiddenExtensions(String e,String path) throws Exception {
-		JSONObject obj= (JSONObject) readJsonSimpleDemo(path);
+	public void addForbiddenExtensions(String e,File path) throws Exception {
+		JSONObject obj= (JSONObject) readJsonSimpleDemo(path.getAbsolutePath().toString());
 		JSONArray ext= (JSONArray) obj.get("ext");
 		ext.add(e);
 		
@@ -699,13 +672,15 @@ public class Folder extends Storage {
 		for(int i=2; i< command.length;i++) {
 			pom=pom+ " "+command[i];
 		}
-		//System.out.println("root:" +root);
-		//System.out.println("curr:" + path);
-		//System.out.println(pom);
+		
+		
+		
+		
 		if(pom.equals("..")) {
 			String help=path.substring(0,path.lastIndexOf(File.separator));
-			//System.out.println("help: " +help);
-			if(root.equals(path)) {
+			
+			if(root.length()==path.length()) {
+				
 				System.out.println("Vec se nalazite u root-u repozitorijumu");
 				return root;
 			}else {
@@ -741,8 +716,9 @@ public class Folder extends Storage {
 					try {
 						FileUtils.copyDirectory(f, destinacija);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
+						
 						e.printStackTrace();
+						System.out.println("Upload nije uspeo.");
 					}
 					
 					return "Uspesno uploadovan folder.";
@@ -781,7 +757,7 @@ public class Folder extends Storage {
 			JSONArray privileges=new JSONArray();
 			System.out.println("Unesite privilegije koje ce korisnik imati: ");
 			System.out.println("");
-			System.out.println("(Privilegije: add_user, add_directory, upload_file, download_file, search_repository, delete_file)");
+			System.out.println("(Privilegije: add_user, add_directory, add_file, download, upload, search_repository, delete_file)");
 			System.out.println("");
 			System.out.println("Ako zelite da zavrsite sa dodavanjem korisnika napisite 'submit'. ");
 			String privilegija = "";
@@ -808,15 +784,13 @@ public class Folder extends Storage {
 			
 			user.put("privileges", privileges);
 			
-			//ConsoleApp.getUsers().add(main);
-			//File folder=new File(ConsoleApp.getFolder().getAbsolutePath()+'\\'+"users.json");
+			
 			String path=f.getAbsolutePath().toString();
 			JSONObject obj = null;
 			try {
 				obj = (JSONObject) readJsonSimpleDemo(f.getAbsolutePath().toString());
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				System.out.println("Doslo je do greske prilikom citanja konfiguracionog fajla korisnika");
 			}
 			JSONArray users= (JSONArray) obj.get("users");
 		
@@ -844,7 +818,43 @@ public class Folder extends Storage {
 		
 		
 	}
+
+	@Override
+	public void addForbiddenExtensions(String e, String path) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
+	 private void zip(String file, String name, String dest) {
+		ZipFile zip= new ZipFile(dest+"\\"+name+".zip");	
+		File folder= new File(file+"\\"+name);
+		
+		if(folder.isDirectory()) {
+			folder= new File(file+"\\"+name);
+			File[] listofFiles= folder.listFiles();
+			for(File f: listofFiles) {
+				f= new File(file+"\\"+name);
+				try {
+					zip.addFolder(f);
+					System.out.println("Zipovanje uspelo!");
+				} catch (Exception e) {
+						System.out.println("Zipovanje nije uspelo");
+						return;
+				}
+			
+			}
+		}
+		if(folder.isFile()) {
+			try {
+				System.out.println("JESTE FAJL");
+				zip.addFile(folder);
+				System.out.println("Zipovanje uspelo!");
+			} catch (Exception e) {
+				System.out.println("Zipovanje nije uspelo");
+				return;
+			}
+		}
+	}
 	
 }

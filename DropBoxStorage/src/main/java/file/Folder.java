@@ -34,6 +34,7 @@ import com.dropbox.core.v2.files.Metadata;
 import com.dropbox.core.v2.files.SearchMatch;
 import com.dropbox.core.v2.files.SearchResult;
 import com.dropbox.core.v2.files.UploadErrorException;
+import com.dropbox.core.v2.files.WriteMode;
 
 import dropbox.Connection;
 import file.manipulation.Storage;
@@ -51,6 +52,14 @@ public class Folder extends Storage {
 	
 	Connection c;
 	
+	
+	@Override
+	public void welcome() {
+		System.out.println("Dobrodosli!"
+				+ "Kako biste biste pristupili root folderu udaljenog skladista unesite prazan string"
+				+ "\ntj. samo pritisnite enter");
+	}
+	
 	@Override
 	public File getJson(String path) throws IOException {
 		this.type="drop";
@@ -61,8 +70,7 @@ public class Folder extends Storage {
 			
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println("Konekcija na skladiste nije uspela.");
 		}
 		
 		DbxRequestConfig  config = c.getConfig();
@@ -79,8 +87,8 @@ public class Folder extends Storage {
 						 .downloadBuilder(path+"/users.json")
 				        .download(outputStream);
 				} catch (DbxException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					System.out.println("Nije uspelo skidanje konfiguracije.");
+					
 				}
 	    	
 				File users = new File(localPath+"/users.json");
@@ -129,7 +137,7 @@ public class Folder extends Storage {
 				usersJson.createNewFile();
 				writer= new BufferedWriter(new FileWriter(usersJson));
 				writer.write(storage.toString());
-				System.out.println(storage);
+				//System.out.println(storage);
 				writer.close();
 				
 				
@@ -146,7 +154,7 @@ public class Folder extends Storage {
 						e.printStackTrace();
 					}
 		    	}
-				
+				//System.out.println(path);
 				return usersJson;
 		    	
 		    	
@@ -243,8 +251,8 @@ public class Folder extends Storage {
 	}
 
 	@Override
-	public void addForbiddenExtensions(String e, String path) throws Exception {
-		JSONObject obj= (JSONObject) readJsonSimpleDemo(path);
+	public void addForbiddenExtensions(String e, File path) throws Exception {
+		JSONObject obj= (JSONObject) readJsonSimpleDemo(path.getAbsolutePath());
 		JSONArray ext= (JSONArray) obj.get("ext");
 		ext.add(e);
 		
@@ -252,6 +260,20 @@ public class Folder extends Storage {
 		writer.write(obj.toString());
 		System.out.println(obj.toString());
 		writer.close();
+		DbxClientV2 client = c.getClient();
+		try (InputStream in = new FileInputStream(path)) {
+    	    try {
+				FileMetadata metadata = client.files().uploadBuilder(super.path + "/users.json")
+				    .uploadAndFinish(in);
+			} catch (UploadErrorException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (DbxException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+    	}
+		
 	}
 
 	@Override
@@ -261,7 +283,7 @@ public class Folder extends Storage {
 	}
 
 	@Override
-	public String addDir(String fileName, String pathCurr,String number,boolean metaBool, User u,String users) throws IOException {
+	public String addDir(String fileName, String pathCurr,String number,boolean metaBool, User u,File users) throws IOException {
 		int broj=Integer.parseInt(number);
 		String path = "help";
 		BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
@@ -273,7 +295,7 @@ public class Folder extends Storage {
 		JSONArray metas = null;
 		DbxClientV2 client = c.getClient();
 		try {
-			obj = (JSONObject) readJsonSimpleDemo(users);
+			obj = (JSONObject) readJsonSimpleDemo(users.getAbsolutePath().toString());
 			metas= (JSONArray) obj.get("meta");
 			//System.out.println(metas);
 		} catch (Exception e1) {
@@ -290,22 +312,20 @@ public class Folder extends Storage {
 				
 					f= new File(path+"\\"+fileName);
 					if(metaBool) {
-						 String atr="Ime fajla: " + fileName;
+						 String atr= fileName;
 						
 						meta.put("name", atr);
-						atr= "User who made it: "+u.getUsername();
+						atr=u.getUsername();
 						meta.put("creator", atr);
-						 atr= "Folder roditelj: "+f.getParentFile();
-						 meta.put("parent", atr);
 						 SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 						 Date date = new Date(System.currentTimeMillis());
 						 atr= formatter.format(date);
-						 atr= "Vreme kreiranja fajla je: " + atr;
+						 atr=  atr;
 						 meta.put("date", atr);
-						 atr= f.getAbsolutePath().toString();
+						 atr= pathCurr+"/" + fileName;
 						 meta.put("path", atr);
-						 //metas.add(meta);
-						 /*String podatak="";
+						 metas.add(meta);
+						 String podatak="";
 						 System.out.println("Unesite naziv i sadrzaj metapodatka: ");
 						 System.out.println("\n");
 						 System.out.println("Naziv metapodatka: ");
@@ -333,32 +353,31 @@ public class Folder extends Storage {
 								 metas.add(meta);
 							 }
 							 
-						 }*/
+						 }
 						 
 					}
 				}else {
 					 f= new File(path+"\\"+fileName+i);
 					 if(metaBool) {
-						 String atr="Ime fajla: " + fileName+i;
+						 String atr=fileName+i;
 						meta= new JSONObject();
 						meta.put("name", atr);
-						atr= "User who made it: "+u.getUsername();
+						atr=u.getUsername();
 						meta.put("creator", atr);
-						 atr= "Folder roditelj: "+f.getParentFile();
+						 atr= f.getParent();
 						 meta.put("parent", atr);
 						 SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 						 Date date = new Date(System.currentTimeMillis());
 						 atr= formatter.format(date);
-						 atr= "Vreme kreiranja fajla je: " + atr;
+						 atr= atr;
 						 meta.put("date", atr);
 						 atr= f.getAbsolutePath().toString();
 						 meta.put("path", atr);
-						 //System.out.println(i);
-						// System.out.println("cao"+meta.get("name"));
 						 
-						 //metas.add(meta);
-						 //System.out.println(metas.toString());
-						 /*String podatak="";
+						 
+						 metas.add(meta);
+						
+						 String podatak="";
 						 System.out.println("Unesite naziv i sadrzaj metapodatka: ");
 						 System.out.println("\n");
 						 System.out.println("Naziv metapodatka: ");
@@ -386,13 +405,13 @@ public class Folder extends Storage {
 								 metas.add(meta);
 							 }
 							 
-						 }*/
+						 }
 						 metas.add(meta);
 						 obj.put("meta", metas);
-						 String a="";
+						 /*String a="";
 						 if(i==broj-1) {
 								a=obj.toString();
-							}
+							}*/
 						 
 					}
 					
@@ -425,8 +444,18 @@ public class Folder extends Storage {
 				e.printStackTrace();
 			}
 			
-			
-			
+			try (InputStream in = new FileInputStream(users)) {
+	    	    try {
+					FileMetadata metadata = client.files().uploadBuilder(super.path + "/users.json")
+							.withMode(WriteMode.OVERWRITE).uploadAndFinish(in);
+				} catch (UploadErrorException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (DbxException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	    	}
 			return "Uploaded ------> 100%";
 		}
 		
@@ -435,13 +464,13 @@ public class Folder extends Storage {
 	
 
 	@Override
-	public String addFile(String fileName, String path, String f, boolean metaBool, User u) throws Exception {
+	public String addFile(String fileName, String path, File f, boolean metaBool, User u) throws Exception {
 		List<String> ext= new ArrayList<String>();
 		String hlpPath = "help";
 		File file= new File(hlpPath+"\\"+fileName);
 		//System.out.println("----->"+f);
 		//System.out.println(file.getAbsolutePath().toString());
-		JSONObject obj= (JSONObject) readJsonSimpleDemo(f);
+		JSONObject obj= (JSONObject) readJsonSimpleDemo(f.getAbsolutePath().toString());
 		Object arr= obj.get("ext");
 		BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
 		if(arr instanceof JSONArray) {
@@ -458,28 +487,25 @@ public class Folder extends Storage {
 			if(metaBool) {
 				JSONArray metaArr= (JSONArray) obj.get("meta");
 				JSONObject meta= new JSONObject();
-				 String atr="Ime fajla: " + file.getName();
+				 String atr=file.getName();
 					
 					meta.put("name", atr);
-					atr= "User who made it: "+u.getUsername();
+					atr= u.getUsername();
 					meta.put("creator", atr);
-					 atr= "Folder roditelj: "+file.getParentFile();
+					 atr= path+"/"+ file.getName();
 					 meta.put("parent", atr);
 					 SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 					 Date date = new Date(System.currentTimeMillis());
 					 atr= formatter.format(date);
-					 atr= "Vreme nastanka fajla: " +atr;
+					 atr= atr;
 					 meta.put("date", atr);
 					 atr= file.getAbsolutePath().toString();
 					 meta.put("path", atr);
-					 /*String podatak="";
+					 String podatak="";
 					 System.out.println("Unesite naziv i sadrzaj metapodatka: ");
 					 System.out.println("\n");
-					 while(!(podatak.equals("submit"))) {
-						 if(podatak.equals("submit")) {
-							 
-							 break;
-						 }
+					do{
+						 
 						 System.out.println("Naziv metapodatka: ");
 						 String name=reader.readLine();
 						 
@@ -487,10 +513,10 @@ public class Folder extends Storage {
 						 String atribut=reader.readLine();
 						 meta.put(name, atribut);
 						 
-						 System.out.println("Ako zelite da zavrsite sa unosom metapodataka, napisite 'submit'");
+						 System.out.println("Ako zelite da zavrsite sa unosom metapodataka, napisite 'submit', a ukoliko zelite da nastavite sa unosom metapodataka pritisnite 'enter'");
 						 podatak=reader.readLine();
 						 
-					 }*/
+					 } while(!podatak.equals("submit")) ;
 					 metaArr.add(meta);
 					 BufferedWriter writer;
 						try {
@@ -501,10 +527,23 @@ public class Folder extends Storage {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+						DbxClientV2 client = c.getClient();
+						try (InputStream in = new FileInputStream(f)) {
+				    	    try {
+								FileMetadata metadata = client.files().uploadBuilder(super.path+"/users.json")
+										.withMode(WriteMode.OVERWRITE).uploadAndFinish(in);
+							} catch (UploadErrorException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (DbxException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+				    	    }
 				
 			}
 			
-			
+			return "USPESNO";
 			
 		}
 		boolean help=true;
@@ -522,20 +561,39 @@ public class Folder extends Storage {
 			if(metaBool) {
 				JSONArray metaArr= (JSONArray) obj.get("meta");
 				JSONObject meta= new JSONObject();
-				 String atr="Ime fajla: " + file.getName();
+				 String atr= file.getName();
 					
 					meta.put("name", atr);
-					atr= "User who made it: "+u.getUsername();
+					atr= u.getUsername();
 					meta.put("creator", atr);
-					 atr= "Folder roditelj: "+file.getParentFile();
+					 atr= file.getParent();
 					 meta.put("parent", atr);
 					 SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
 					 Date date = new Date(System.currentTimeMillis());
 					 atr= formatter.format(date);
-					 atr= "Vreme nastanka fajla: " +atr;
+					 atr= atr;
 					 meta.put("date", atr);
 					 atr= file.getAbsolutePath().toString();
 					 meta.put("path", atr);
+					 String podatak="";
+					 System.out.println("Unesite naziv i sadrzaj metapodatka: ");
+					 System.out.println("\n");
+					 while(!(podatak.equals("submit"))) {
+						 if(podatak.equals("submit")) {
+							 
+							 break;
+						 }
+						 System.out.println("Naziv metapodatka: ");
+						 String name=reader.readLine();
+						 
+						 System.out.println("Sadrzaj metapodatka: ");
+						 String atribut=reader.readLine();
+						 meta.put(name, atribut);
+						 
+						 System.out.println("Ako zelite da zavrsite sa unosom metapodataka, napisite 'submit'");
+						 podatak=reader.readLine();
+						 
+					 }
 					 metaArr.add(meta);
 					 BufferedWriter writer;
 						try {
@@ -546,6 +604,19 @@ public class Folder extends Storage {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
+						DbxClientV2 client = c.getClient();
+						try (InputStream in = new FileInputStream(f)) {
+				    	    try {
+								FileMetadata metadata = client.files().uploadBuilder(super.path+"/users.json")
+										.withMode(WriteMode.OVERWRITE).uploadAndFinish(in);
+							} catch (UploadErrorException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							} catch (DbxException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+				    	    }
 				
 			}
 			DbxClientV2 client = c.getClient();
@@ -553,7 +624,7 @@ public class Folder extends Storage {
 			try (InputStream in = new FileInputStream(file)) {
 	    	    try {
 					FileMetadata metadata = client.files().uploadBuilder(path+"/"+fileName)
-					    .uploadAndFinish(in);
+							.withMode(WriteMode.OVERWRITE).uploadAndFinish(in);
 					file.delete();
 				} catch (UploadErrorException e) {
 					// TODO Auto-generated catch block
@@ -672,11 +743,12 @@ public class Folder extends Storage {
 		if(pom.equals("..") ) {
 			
 			//System.out.println("help: " +help);
-			if(root.equals("")) {
+			if(path.equals("") || path.equals("/") || path.equals("\\")) {
 				System.out.println("Vec se nalazite u root-u repozitorijumu");
 				return root;
 			}else {
-				String help=path.substring(0,path.lastIndexOf(File.separator));
+				File f= new File(path);
+				String help=f.getParent();
 				System.out.println("Trenutna lokacija: " + help);
 				return help;
 				
@@ -815,7 +887,7 @@ public class Folder extends Storage {
 			JSONArray privileges=new JSONArray();
 			System.out.println("Unesite privilegije koje ce korisnik imati: ");
 			System.out.println("");
-			System.out.println("(Privilegije: add_user, add_directory, upload_file, download_file, search_repository, delete_file)");
+			System.out.println("(Privilegije: add_user, add_directory, add_file, download, upload, search_repository, delete_file)");
 			System.out.println("");
 			System.out.println("Ako zelite da zavrsite sa dodavanjem korisnika napisite 'submit'. ");
 			String privilegija = "";
@@ -877,7 +949,7 @@ public class Folder extends Storage {
 			
 			try (InputStream in = new FileInputStream(f)) {
 	    	    try {
-					FileMetadata metadata = client.files().uploadBuilder("/users.json")
+					FileMetadata metadata = client.files().uploadBuilder(super.path + "/users.json")
 					    .uploadAndFinish(in);
 				} catch (UploadErrorException e) {
 					// TODO Auto-generated catch block
@@ -940,5 +1012,13 @@ public class Folder extends Storage {
 		    	return;
 		    }
 	}
-	
+
+	@Override
+	public void addForbiddenExtensions(String e, String path) throws Exception {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
+	
+

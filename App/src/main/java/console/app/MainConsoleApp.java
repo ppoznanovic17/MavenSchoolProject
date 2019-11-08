@@ -30,9 +30,7 @@ public class MainConsoleApp {
 	/*
 	 * @Petar & @Bogdan
 	 * 
-	 * C:\Users\Peca\Desktop\html css skripte
-	 * 
-	 * C:\Users\Bogi\Desktop\lokalno
+	 *
 	 * */
 	
 	/* za koriscenje ovih boja u konzoli skini ANSI escape u marketplace-u*/
@@ -52,20 +50,25 @@ public class MainConsoleApp {
 	
 	public static void main(String[] args) throws Exception {
 		BufferedReader reader=new BufferedReader(new InputStreamReader(System.in));
-		ConsoleFunctions.write("Dobrodosli");
-		//ucitavanje json fajla (univerzalno)
-		 currentFolder=ConsoleFunctions.question("Unesite putanju do repozitorijuma: (ako koristite udaljeno skladiste samo pritisnite enter)");
-		 folder.setPath(currentFolder);
+		folder.welcome();
+		
+		 currentFolder=ConsoleFunctions.question("Unesite putanju do repozitorijuma:");
+		 
 		File file= folder.getJson(currentFolder);
+		System.out.println(currentFolder);
 		jsonUsers= file.getAbsolutePath().toString();
 		String absolutePath = file.getAbsolutePath();
-		/*root=absolutePath.
-	    substring(0,absolutePath.lastIndexOf(File.separator));*/
-		root = currentFolder;
+		
+		if(folder.getType().equals("local")) {
+			currentFolder= file.getParent();
+			root=currentFolder;
+		}else {
+			root=currentFolder;
+		}
+		
 		String currentHelp="";
 		if(root.equals(""))  currentHelp="root/";
-		//System.out.println(root+"/");
-		
+		folder.setPath(root);
 		System.out.println("Kako biste pristupili repozitorijumu molimo Vas da se ulogujete\n");
         
 		System.out.println("Username: ");
@@ -111,7 +114,7 @@ public class MainConsoleApp {
 				if(metaString.equals("y"))meta=true;
 				else meta = false;
 				//String path = "help";
-				System.out.println(folder.addDir(name, currentFolder, brojFoldera, meta, user, jsonUsers));
+				System.out.println(folder.addDir(name, currentFolder, brojFoldera, meta, user, file));
 				continue;
 				
 				//System.out.println("2");
@@ -128,12 +131,12 @@ public class MainConsoleApp {
 				if(metaString.equals("y"))meta=true;
 				else meta = false;
 				 
-				System.out.println(folder.addFile(name, currentFolder, jsonUsers, meta, user));
+				System.out.println(folder.addFile(name, currentFolder, file, meta, user));
 				continue;
 			}else
 			if(answer.equals("4") && privileges.contains("download")) {
 				String name;
-				name=ConsoleFunctions.question("Unesite ime fajl koji zelite da preuzmete:");
+				name=ConsoleFunctions.question("Unesite ime fajl koji zelite da preuzmete sa trenutne putanje:");
 				String putanja;
 				putanja=ConsoleFunctions.question("Unesite putanju na kojoj zelite da se fajl preuzme: ");
 				System.out.println(folder.download(name, putanja,currentFolder));
@@ -185,7 +188,7 @@ public class MainConsoleApp {
 			}else if(answer.equals("8") && privileges.contains("add_user")) {
 				String name;
 				name=ConsoleFunctions.question("Unesite extenziju koju zelite da zabranite (unos ide bez '.' [.exe : neispravno] [exe : ispravno] :");
-				folder.addForbiddenExtensions(name,jsonUsers);
+				folder.addForbiddenExtensions(name,file);
 				continue;
 			}else if(answer.equals("9") && privileges.contains("download")) {
 				String name;
@@ -216,12 +219,14 @@ public class MainConsoleApp {
 				folder.ls(currentFolder);
 				continue;
 			}else if(answer.startsWith("cd")) {
+				//System.out.println("CURRENT: " + currentFolder);
+				//System.out.println("ROOT: " + root);
 				String[] tokens = answer.split(" ");
 				if(tokens.length==1) {
 					System.out.println("Nepotpuna komanda");
 				}else if(tokens.length>1) {
 					currentFolder=folder.cd(tokens, currentFolder, root);
-					System.out.println(currentFolder);
+					
 				}
 				
 				continue;
